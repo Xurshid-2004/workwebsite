@@ -44,6 +44,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# legacy subfolder (app moved to repo root)
+/work/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
