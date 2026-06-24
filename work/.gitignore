@@ -34,6 +34,12 @@ yarn-error.log*
 .env*
 !.env.example
 
+# filled env copies (keep only *.example in git)
+/env/local.env
+/env/production.env
+/env/mock-production.env
+/env/vercel-import.env
+
 # vercel
 .vercel
 

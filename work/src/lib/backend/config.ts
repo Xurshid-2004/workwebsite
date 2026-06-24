@@ -1,10 +1,12 @@
 export function isBackendEnabled(): boolean {
   return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
+      process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN &&
+      process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID &&
+      process.env.NEXT_PUBLIC_FIREBASE_APP_ID
   );
 }
 
-export function getDataSource(): 'supabase' | 'mock' {
-  return isBackendEnabled() ? 'supabase' : 'mock';
+export function getDataSource(): 'firebase' | 'mock' {
+  return isBackendEnabled() ? 'firebase' : 'mock';
 }

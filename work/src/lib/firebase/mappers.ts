@@ -2,7 +2,7 @@ import type { Job, Location } from '@/types';
 import type { User, NotificationSettings, ProfileRole, AppLanguage } from '@/types';
 import type { Message, Chat } from '@/types';
 import type { Category } from '@/types';
-import type { JobRow, ProfileRow, MessageRow, ChatRow, CategoryRow, Json } from './database.types';
+import type { JobRow, ProfileRow, MessageRow, ChatRow, CategoryRow, Json } from './document.types';
 import type { ScheduleFilter } from '@/types';
 import type { WorkType, ScheduleType, JobStatus } from '@/types';
 import { DEFAULT_NOTIFICATION_SETTINGS } from '@/types';
@@ -159,10 +159,10 @@ export function mapMessageRow(row: MessageRow): Message {
   };
 }
 
-export function mapChatRow(row: ChatRow, participantIds: string[]): Chat {
+export function mapChatRow(row: ChatRow): Chat {
   return {
     id: row.id,
-    participantIds,
+    participantIds: row.participant_ids,
     jobId: row.job_id ?? undefined,
     lastMessageId: row.last_message_id ?? '',
     updatedAt: row.updated_at,

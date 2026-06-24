@@ -7,7 +7,7 @@ import { resolveFilterId } from '@/lib/filters/job-filters';
 import { userJobsStore } from '@/services/user-jobs.store';
 import { jobModerationStore } from '@/services/job-moderation.store';
 import { isBackendEnabled } from '@/lib/backend/config';
-import { supabaseJobsRepository } from '@/lib/supabase/repositories/jobs.repository';
+import { firebaseJobsRepository } from '@/lib/firebase/repositories/jobs.repository';
 import {
   matchesSearchParams,
   sortJobs,
@@ -16,7 +16,7 @@ import {
 
 async function fetchAllJobs(): Promise<Job[]> {
   if (isBackendEnabled()) {
-    return supabaseJobsRepository.getAll();
+    return firebaseJobsRepository.getAll();
   }
   const userJobs = typeof window !== 'undefined' ? userJobsStore.getAll() : [];
   const merged = [...userJobs, ...jobsData]
@@ -91,7 +91,7 @@ export const jobsService = {
 
   async getByIdAsync(id: string): Promise<Job | undefined> {
     if (isBackendEnabled()) {
-      return supabaseJobsRepository.getById(id);
+      return firebaseJobsRepository.getById(id);
     }
     return this.getById(id);
   },
@@ -99,7 +99,7 @@ export const jobsService = {
   async createFromForm(data: CreateJobFormData): Promise<Job> {
     const job = createJobFormToEntity(data);
     if (isBackendEnabled()) {
-      return supabaseJobsRepository.insert(job);
+      return firebaseJobsRepository.insert(job);
     }
     return userJobsStore.add(job);
   },
@@ -199,7 +199,7 @@ export const jobsService = {
 
   async updateJobStatus(id: string, status: JobStatus): Promise<void> {
     if (isBackendEnabled()) {
-      await supabaseJobsRepository.updateStatus(id, status);
+      await firebaseJobsRepository.updateStatus(id, status);
       return;
     }
     if (userJobsStore.update(id, { status })) return;
@@ -208,7 +208,7 @@ export const jobsService = {
 
   async deleteJob(id: string): Promise<void> {
     if (isBackendEnabled()) {
-      await supabaseJobsRepository.delete(id);
+      await firebaseJobsRepository.delete(id);
       return;
     }
     if (!userJobsStore.remove(id)) {

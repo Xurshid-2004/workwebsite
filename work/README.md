@@ -20,20 +20,17 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Backend (Supabase)
+## Backend (Firebase)
 
-By default the app runs on **mock data** (seed jobs + localStorage). To connect Supabase:
+By default the app runs on **mock data** (seed jobs + localStorage). To connect Firebase:
 
-1. Copy `.env.example` → `.env.local`
-2. Add your `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-3. Run migrations in Supabase SQL Editor:
-   - `supabase/migrations/001_schema.sql`
-   - `supabase/migrations/002_seed.sql`
-   - `supabase/migrations/003_admin.sql`
-4. Enable **Realtime** for the `messages` table
-5. Set `NEXT_PUBLIC_AUTH_PROVIDER=supabase` and restart `npm run dev`
+1. Copy `env/production.env.example` → `.env.local` (or use `env/local.env.example` for mock)
+2. Add your Firebase `NEXT_PUBLIC_FIREBASE_*` variables
+3. In Firebase Console: enable **Email/Password** auth and create a **Firestore** database
+4. Deploy security rules from `firebase/firestore.rules`
+5. Set `NEXT_PUBLIC_AUTH_PROVIDER=firebase` and restart `npm run dev`
 
-**Tables:** profiles, categories, jobs, favorites, chats, messages, reports (with RLS).
+**Collections:** profiles, categories, jobs, favorites, chats (+ messages subcollection), reports, locations.
 
 **Services:** jobs, categories, favorites, chats, auth/profile, reports — all fall back to mock when env vars are unset.
 
@@ -48,8 +45,8 @@ Features: dashboard stats, job moderation (approve/reject/delete), user blocking
 ## Production checklist
 
 - Set `NEXT_PUBLIC_SITE_URL` to your production domain
-- Run all SQL migrations including `004_security_hardening.sql`
-- Set `NEXT_PUBLIC_AUTH_PROVIDER=supabase` for real auth
+- Deploy Firestore security rules (`firebase/firestore.rules`)
+- Set `NEXT_PUBLIC_AUTH_PROVIDER=firebase` for real auth
 - Build: `npm run lint && npm run build`
 - Start: `npm run start` (or deploy to Vercel)
 

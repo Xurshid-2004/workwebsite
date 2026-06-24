@@ -1,6 +1,6 @@
 import { favorites as favoritesData, FAVORITES_STORAGE_KEY } from '@/data';
 import { isBackendEnabled } from '@/lib/backend/config';
-import { supabaseFavoritesRepository } from '@/lib/supabase/repositories/favorites.repository';
+import { firebaseFavoritesRepository } from '@/lib/firebase/repositories/favorites.repository';
 import { authService } from '@/services/auth.service';
 
 function readStorage(): Set<string> {
@@ -31,7 +31,7 @@ export const favoritesService = {
 
   async getFavoriteJobIdsAsync(): Promise<Set<string>> {
     if (isBackendEnabled()) {
-      return supabaseFavoritesRepository.getFavoriteIds(authService.getCurrentUserId());
+      return firebaseFavoritesRepository.getFavoriteIds(authService.getCurrentUserId());
     }
     return readStorage();
   },
@@ -56,7 +56,7 @@ export const favoritesService = {
 
   async toggleFavoriteAsync(jobId: string): Promise<boolean> {
     if (isBackendEnabled()) {
-      return supabaseFavoritesRepository.toggle(authService.getCurrentUserId(), jobId);
+      return firebaseFavoritesRepository.toggle(authService.getCurrentUserId(), jobId);
     }
     return this.toggleFavorite(jobId);
   },

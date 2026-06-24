@@ -19,12 +19,12 @@ import { reportsStore } from '@/services/reports.store';
 import { locationsStore } from '@/services/locations.store';
 import { profileStore } from '@/services/profile.store';
 import { usersService } from '@/services/users.service';
-import { supabaseProfilesRepository } from '@/lib/supabase/repositories/profiles.repository';
-import { supabaseJobsRepository } from '@/lib/supabase/repositories/jobs.repository';
-import { supabaseReportsRepository } from '@/lib/supabase/repositories/reports.repository';
-import { supabaseCategoriesRepository } from '@/lib/supabase/repositories/categories.repository';
-import { supabaseLocationsRepository } from '@/lib/supabase/repositories/locations.repository';
-import { getSupabaseClient } from '@/lib/supabase/client';
+import { firebaseProfilesRepository } from '@/lib/firebase/repositories/profiles.repository';
+import { firebaseJobsRepository } from '@/lib/firebase/repositories/jobs.repository';
+import { firebaseReportsRepository } from '@/lib/firebase/repositories/reports.repository';
+import { firebaseCategoriesRepository } from '@/lib/firebase/repositories/categories.repository';
+import { firebaseLocationsRepository } from '@/lib/firebase/repositories/locations.repository';
+import { firebaseChatsRepository } from '@/lib/firebase/repositories/chats.repository';
 
 function mergeUsers(): AdminUserRow[] {
   const byId = new Map<string, AdminUserRow>();
@@ -44,22 +44,20 @@ function mergeUsers(): AdminUserRow[] {
 export const adminService = {
   async getDashboardStats(): Promise<AdminDashboardStats> {
     if (isBackendEnabled()) {
-      const supabase = getSupabaseClient();
-      const [totalJobs, activeJobs, pendingPosts, totalUsers, pendingReports, chatsResult] =
+      const [totalJobs, activeJobs, pendingPosts, totalUsers, pendingReports, totalChats] =
         await Promise.all([
-          supabaseJobsRepository.countByStatus(),
-          supabaseJobsRepository.countByStatus('active'),
-          supabaseJobsRepository.countByStatus('pending'),
-          supabaseProfilesRepository.count(),
-          supabaseReportsRepository.countPending(),
-          supabase.from('chats').select('id', { count: 'exact', head: true }),
+          firebaseJobsRepository.countByStatus(),
+          firebaseJobsRepository.countByStatus('active'),
+          firebaseJobsRepository.countByStatus('pending'),
+          firebaseProfilesRepository.count(),
+          firebaseReportsRepository.countPending(),
+          firebaseChatsRepository.count(),
         ]);
-      if (chatsResult.error) throw chatsResult.error;
       return {
         totalJobs,
         activeJobs,
         totalUsers,
-        totalChats: chatsResult.count ?? 0,
+        totalChats,
         pendingPosts,
         pendingReports,
       };
@@ -113,7 +111,7 @@ export const adminService = {
 
   async listUsers(): Promise<AdminUserRow[]> {
     if (isBackendEnabled()) {
-      const users = await supabaseProfilesRepository.list();
+      const users = await firebaseProfilesRepository.list();
       return users.map((u) => ({ ...u, blocked: u.blocked ?? false }));
     }
     return mergeUsers();
@@ -121,7 +119,7 @@ export const adminService = {
 
   async setUserBlocked(userId: string, blocked: boolean): Promise<void> {
     if (isBackendEnabled()) {
-      await supabaseProfilesRepository.setBlocked(userId, blocked);
+      await firebaseProfilesRepository.setBlocked(userId, blocked);
       return;
     }
     const seed = seedUsers.find((u) => u.id === userId);
@@ -131,13 +129,13 @@ export const adminService = {
   },
 
   async listReports(): Promise<Report[]> {
-    if (isBackendEnabled()) return supabaseReportsRepository.list();
+    if (isBackendEnabled()) return firebaseReportsRepository.list();
     return reportsStore.list();
   },
 
   async updateReportStatus(id: string, status: ReportStatus): Promise<void> {
     if (isBackendEnabled()) {
-      await supabaseReportsRepository.updateStatus(id, status);
+      await firebaseReportsRepository.updateStatus(id, status);
       return;
     }
     const updated = reportsStore.updateStatus(id, status);
@@ -145,7 +143,7 @@ export const adminService = {
   },
 
   async listCategories(): Promise<Category[]> {
-    if (isBackendEnabled()) return supabaseCategoriesRepository.list();
+    if (isBackendEnabled()) return firebaseCategoriesRepository.list();
     return seedCategories.map((cat) => ({
       ...cat,
       jobCount: 0,
@@ -155,7 +153,7 @@ export const adminService = {
   async createCategory(input: CategoryInput): Promise<Category> {
     const id = `cat-${Date.now()}`;
     if (isBackendEnabled()) {
-      return supabaseCategoriesRepository.create({
+      return firebaseCategoriesRepository.create({
         id,
         name: input.name.trim(),
         slug: input.slug.trim(),
@@ -174,7 +172,7 @@ export const adminService = {
   },
 
   async updateCategory(id: string, input: CategoryUpdateInput): Promise<Category> {
-    if (isBackendEnabled()) return supabaseCategoriesRepository.update(id, input);
+    if (isBackendEnabled()) return firebaseCategoriesRepository.update(id, input);
     const index = seedCategories.findIndex((c) => c.id === id);
     if (index < 0) throw new Error('Category not found');
     seedCategories[index] = { ...seedCategories[index], ...input };
@@ -183,7 +181,7 @@ export const adminService = {
 
   async deleteCategory(id: string): Promise<void> {
     if (isBackendEnabled()) {
-      await supabaseCategoriesRepository.remove(id);
+      await firebaseCategoriesRepository.remove(id);
       return;
     }
     const index = seedCategories.findIndex((c) => c.id === id);
@@ -191,12 +189,12 @@ export const adminService = {
   },
 
   async listLocations(): Promise<LocationRecord[]> {
-    if (isBackendEnabled()) return supabaseLocationsRepository.list();
+    if (isBackendEnabled()) return firebaseLocationsRepository.list();
     return locationsStore.list();
   },
 
   async createLocation(label: string): Promise<LocationRecord> {
-    if (isBackendEnabled()) return supabaseLocationsRepository.create(label);
+    if (isBackendEnabled()) return firebaseLocationsRepository.create(label);
     return locationsStore.create(label);
   },
 
@@ -204,7 +202,7 @@ export const adminService = {
     id: string,
     patch: Partial<Pick<LocationRecord, 'label' | 'isActive'>>
   ): Promise<LocationRecord> {
-    if (isBackendEnabled()) return supabaseLocationsRepository.update(id, patch);
+    if (isBackendEnabled()) return firebaseLocationsRepository.update(id, patch);
     const updated = locationsStore.update(id, patch);
     if (!updated) throw new Error('Location not found');
     return updated;
@@ -212,7 +210,7 @@ export const adminService = {
 
   async deleteLocation(id: string): Promise<void> {
     if (isBackendEnabled()) {
-      await supabaseLocationsRepository.remove(id);
+      await firebaseLocationsRepository.remove(id);
       return;
     }
     if (!locationsStore.remove(id)) throw new Error('Location not found');

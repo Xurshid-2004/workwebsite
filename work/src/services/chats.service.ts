@@ -3,7 +3,7 @@ import { chats as seedChats, messages as seedMessages } from '@/data';
 import { authService } from '@/services/auth.service';
 import { chatStore } from '@/services/chat.store';
 import { isBackendEnabled } from '@/lib/backend/config';
-import { supabaseChatsRepository } from '@/lib/supabase/repositories/chats.repository';
+import { firebaseChatsRepository } from '@/lib/firebase/repositories/chats.repository';
 import { jobsService } from '@/services/jobs.service';
 import {
   buildChatHeader,
@@ -34,7 +34,7 @@ function getAllMessagesMock(): Message[] {
 
 async function getAllChats(): Promise<Chat[]> {
   if (isBackendEnabled()) {
-    return supabaseChatsRepository.getChatsForUser(currentUserId());
+    return firebaseChatsRepository.getChatsForUser(currentUserId());
   }
   return getAllChatsMock();
 }
@@ -44,7 +44,7 @@ async function getAllMessages(): Promise<Message[]> {
     const chats = await getAllChats();
     const all: Message[] = [];
     for (const chat of chats) {
-      const msgs = await supabaseChatsRepository.getMessages(chat.id);
+      const msgs = await firebaseChatsRepository.getMessages(chat.id);
       all.push(...msgs);
     }
     return all;
@@ -63,7 +63,7 @@ export const chatsService = {
 
   async getChatById(chatId: string): Promise<Chat | undefined> {
     if (isBackendEnabled()) {
-      return supabaseChatsRepository.getChatById(chatId);
+      return firebaseChatsRepository.getChatById(chatId);
     }
     return getAllChatsMock().find((c) => c.id === chatId);
   },
@@ -94,7 +94,7 @@ export const chatsService = {
 
     const job = await getJobForChat(chat);
     const messages = isBackendEnabled()
-      ? sortMessagesAsc(await supabaseChatsRepository.getMessages(chatId))
+      ? sortMessagesAsc(await firebaseChatsRepository.getMessages(chatId))
       : sortMessagesAsc(getAllMessagesMock().filter((m) => m.chatId === chatId));
     const allMessages = isBackendEnabled() ? messages : getAllMessagesMock();
     const preview = buildChatPreview(chat, allMessages, job);
@@ -105,7 +105,7 @@ export const chatsService = {
 
   async getMessages(chatId: string): Promise<Message[]> {
     if (isBackendEnabled()) {
-      return sortMessagesAsc(await supabaseChatsRepository.getMessages(chatId));
+      return sortMessagesAsc(await firebaseChatsRepository.getMessages(chatId));
     }
     return sortMessagesAsc(getAllMessagesMock().filter((m) => m.chatId === chatId));
   },
@@ -114,7 +114,7 @@ export const chatsService = {
     const userId = currentUserId();
 
     if (isBackendEnabled()) {
-      await supabaseChatsRepository.markAsRead(chatId, userId);
+      await firebaseChatsRepository.markAsRead(chatId, userId);
       return true;
     }
 
@@ -166,7 +166,7 @@ export const chatsService = {
     };
 
     if (isBackendEnabled()) {
-      return supabaseChatsRepository.sendMessage(message);
+      return firebaseChatsRepository.sendMessage(message);
     }
 
     if (typeof window !== 'undefined') {
@@ -208,7 +208,7 @@ export const chatsService = {
     };
 
     if (isBackendEnabled()) {
-      return supabaseChatsRepository.createChat(newChat);
+      return firebaseChatsRepository.createChat(newChat);
     }
 
     if (typeof window !== 'undefined') {
@@ -220,7 +220,7 @@ export const chatsService = {
 
   subscribeToMessages(chatId: string, onInsert: (message: Message) => void): (() => void) | null {
     if (!isBackendEnabled()) return null;
-    return supabaseChatsRepository.subscribeToMessages(chatId, onInsert);
+    return firebaseChatsRepository.subscribeToMessages(chatId, onInsert);
   },
 
   getOtherParticipantId(chat: Chat): string | undefined {

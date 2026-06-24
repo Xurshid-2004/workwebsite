@@ -88,7 +88,7 @@ export function SettingsContent() {
 
       {isMockAuth && (
         <div className="card p-4 mb-6 border-amber-200 bg-amber-50 text-sm text-amber-900">
-          Mock auth is active. Set Supabase env vars and NEXT_PUBLIC_AUTH_PROVIDER=supabase for production.
+          Mock auth is active. Set Firebase env vars and NEXT_PUBLIC_AUTH_PROVIDER=firebase for production.
         </div>
       )}
 

@@ -12,7 +12,7 @@ import { isBackendEnabled } from '@/lib/backend/config';
 import { getAuthRepository } from '@/services/auth';
 import { authStore } from '@/services/auth/auth.store';
 import { profileStore } from '@/services/profile.store';
-import { supabaseProfilesRepository } from '@/lib/supabase/repositories/profiles.repository';
+import { firebaseProfilesRepository } from '@/lib/firebase/repositories/profiles.repository';
 
 function mergeSeedUser(seed: (typeof seedUsers)[number]): User {
   const stored = profileStore.getById(seed.id);
@@ -71,7 +71,7 @@ export const authService = {
 
   async getUserById(userId: string): Promise<User | undefined> {
     if (isBackendEnabled()) {
-      const profile = await supabaseProfilesRepository.getById(userId);
+      const profile = await firebaseProfilesRepository.getById(userId);
       if (profile) return profile;
     }
     const seed = seedUsers.find((u) => u.id === userId);
@@ -92,7 +92,7 @@ export const authService = {
 
   async updateProfile(userId: string, patch: UserProfileUpdate): Promise<User | undefined> {
     if (isBackendEnabled()) {
-      return supabaseProfilesRepository.update(userId, patch);
+      return firebaseProfilesRepository.update(userId, patch);
     }
 
     const existing = this.getUserByIdSync(userId);

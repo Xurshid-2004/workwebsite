@@ -1,13 +1,13 @@
 import type { Report, ReportStatus } from '@/types';
 import { isBackendEnabled } from '@/lib/backend/config';
 import {
-  supabaseReportsRepository,
+  firebaseReportsRepository,
   type CreateReportInput,
-} from '@/lib/supabase/repositories/reports.repository';
+} from '@/lib/firebase/repositories/reports.repository';
 import { authService } from '@/services/auth.service';
 import { reportsStore } from '@/services/reports.store';
 
-export type { CreateReportInput, ReportTargetType } from '@/lib/supabase/repositories/reports.repository';
+export type { CreateReportInput, ReportTargetType } from '@/lib/firebase/repositories/reports.repository';
 
 export const reportsService = {
   async submitReport(input: Omit<CreateReportInput, 'reporterId'>): Promise<void> {
@@ -30,12 +30,12 @@ export const reportsService = {
       return;
     }
 
-    await supabaseReportsRepository.create(payload);
+    await firebaseReportsRepository.create(payload);
   },
 
   async listReports(): Promise<Report[]> {
     if (!isBackendEnabled()) return reportsStore.list();
-    return supabaseReportsRepository.list();
+    return firebaseReportsRepository.list();
   },
 
   async updateReportStatus(id: string, status: ReportStatus): Promise<void> {
@@ -44,6 +44,6 @@ export const reportsService = {
       if (!updated) throw new Error('Report not found');
       return;
     }
-    await supabaseReportsRepository.updateStatus(id, status);
+    await firebaseReportsRepository.updateStatus(id, status);
   },
 };
