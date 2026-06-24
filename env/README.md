@@ -14,7 +14,6 @@ Bu papkada tayyor shablonlar bor. Qiymatlarni to'ldirib, Vercelga qo'yasiz.
 ## Local (kompyuter)
 
 ```bash
-cd work
 copy env\local.env.example .env.local
 # yoki Firebase bilan ishlasangiz: production.env.example dan nusxa oling
 npm run dev
@@ -23,8 +22,8 @@ npm run dev
 ## Vercel deploy
 
 1. [vercel.com](https://vercel.com) → **Add New Project** → `Xurshid-2004/workwebsite` reponi tanlang
-2. **Root Directory** → `work` (muhim!)
-3. Env o'zgaruvchilar `vercel.json` va `.env.production` da allaqachon bor — qo'lda kiritish shart emas
+2. **Root Directory** bo'sh qoldiring (loyiha repo root da)
+3. Env o'zgaruvchilar `vercel.json` va `.env.production` da allaqachon bor
 4. Deploy
 
 ### Firebase Console (bir marta)
