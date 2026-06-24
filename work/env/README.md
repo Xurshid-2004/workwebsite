@@ -24,13 +24,18 @@ npm run dev
 
 1. [vercel.com](https://vercel.com) → **Add New Project** → `Xurshid-2004/workwebsite` reponi tanlang
 2. **Root Directory** → `work` (muhim!)
-3. **Environment Variables** → `production.env.example` oching, qiymatlarni to'ldiring
-4. Har bir o'zgaruvchini **Production** (va kerak bo'lsa Preview) uchun qo'shing
-5. Deploy
+3. Env o'zgaruvchilar `vercel.json` va `.env.production` da allaqachon bor — qo'lda kiritish shart emas
+4. Deploy
 
-### Tez import
+### Firebase Console (bir marta)
 
-`vercel-import.env.example` faylida qiymatlarni tekshiring, keyin Vercel dashboardda **Environment Variables → Import .env** orqali yuklang.
+**Authentication** → **Settings** → **Authorized domains** ga Vercel domeningizni qo'shing:
+- `your-project.vercel.app`
+- `*.vercel.app` (preview uchun)
+
+**Authentication** → **Sign-in method** → **Email/Password** yoqing.
+
+**Firestore Database** yarating va `firebase/firestore.rules` ni deploy qiling.
 
 ## O'zgaruvchilar
 

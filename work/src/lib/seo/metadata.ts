@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 
+import { getSiteUrl } from '@/lib/site-url';
+
 const SITE_NAME = 'JobMarket';
 const SITE_DESCRIPTION =
   'Discover job opportunities, post listings, chat with employers, and manage your career on JobMarket.';
@@ -7,7 +9,9 @@ const SITE_DESCRIPTION =
 export const siteConfig = {
   name: SITE_NAME,
   description: SITE_DESCRIPTION,
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+  get url() {
+    return getSiteUrl();
+  },
 };
 
 export function createPageMetadata({
