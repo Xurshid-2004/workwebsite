@@ -1,0 +1,114 @@
+import type {
+  AuthSession,
+  LoginCredentials,
+  RegisterCredentials,
+  User,
+  UserProfileUpdate,
+} from '@/types';
+import { DEFAULT_DEMO_USER_ID } from '@/data/constants';
+import { users as seedUsers } from '@/data/users';
+import { DEFAULT_NOTIFICATION_SETTINGS } from '@/types';
+import { isBackendEnabled } from '@/lib/backend/config';
+import { getAuthRepository } from '@/services/auth';
+import { authStore } from '@/services/auth/auth.store';
+import { profileStore } from '@/services/profile.store';
+import { supabaseProfilesRepository } from '@/lib/supabase/repositories/profiles.repository';
+
+function mergeSeedUser(seed: (typeof seedUsers)[number]): User {
+  const stored = profileStore.getById(seed.id);
+  return {
+    ...seed,
+    phone: stored?.phone ?? seed.phone,
+    profileRole: stored?.profileRole ?? seed.profileRole ?? 'both',
+    language: stored?.language ?? seed.language ?? 'en',
+    notifications: stored?.notifications ?? seed.notifications ?? { ...DEFAULT_NOTIFICATION_SETTINGS },
+    name: stored?.name ?? seed.name,
+    avatarUrl: stored?.avatarUrl ?? seed.avatarUrl,
+    title: stored?.title ?? seed.title,
+    blocked: stored?.blocked ?? seed.blocked ?? false,
+  };
+}
+
+export const authService = {
+  getRepository() {
+    return getAuthRepository();
+  },
+
+  getSession(): AuthSession | null {
+    return authStore.getSession();
+  },
+
+  async hydrateSession(): Promise<AuthSession | null> {
+    const session = await getAuthRepository().getSession();
+    authStore.setSession(session);
+    return session;
+  },
+
+  isAuthenticated(): boolean {
+    return Boolean(authStore.getSession());
+  },
+
+  getCurrentUserId(): string {
+    return authStore.getSession()?.userId ?? DEFAULT_DEMO_USER_ID;
+  },
+
+  async login(credentials: LoginCredentials): Promise<AuthSession> {
+    const session = await getAuthRepository().signInWithEmail(credentials);
+    authStore.setSession(session);
+    return session;
+  },
+
+  async register(credentials: RegisterCredentials): Promise<AuthSession> {
+    const session = await getAuthRepository().signUpWithEmail(credentials);
+    authStore.setSession(session);
+    return session;
+  },
+
+  async logout(): Promise<void> {
+    await getAuthRepository().signOut();
+    authStore.setSession(null);
+  },
+
+  async getUserById(userId: string): Promise<User | undefined> {
+    if (isBackendEnabled()) {
+      const profile = await supabaseProfilesRepository.getById(userId);
+      if (profile) return profile;
+    }
+    const seed = seedUsers.find((u) => u.id === userId);
+    if (seed) return mergeSeedUser(seed);
+    return profileStore.getById(userId);
+  },
+
+  getUserByIdSync(userId: string): User | undefined {
+    const seed = seedUsers.find((u) => u.id === userId);
+    if (seed) return mergeSeedUser(seed);
+    return profileStore.getById(userId);
+  },
+
+  getCurrentUser(): User {
+    const userId = this.getCurrentUserId();
+    return this.getUserByIdSync(userId) ?? mergeSeedUser(seedUsers[0]);
+  },
+
+  async updateProfile(userId: string, patch: UserProfileUpdate): Promise<User | undefined> {
+    if (isBackendEnabled()) {
+      return supabaseProfilesRepository.update(userId, patch);
+    }
+
+    const existing = this.getUserByIdSync(userId);
+    if (!existing) return undefined;
+
+    if (seedUsers.some((u) => u.id === userId)) {
+      return profileStore.save({
+        ...existing,
+        ...patch,
+        notifications: {
+          ...existing.notifications,
+          ...patch.notifications,
+        },
+      });
+    }
+
+    return profileStore.update(userId, patch);
+  },
+};

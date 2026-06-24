@@ -1,0 +1,78 @@
+import type { User } from '@/types';
+import { DEFAULT_NOTIFICATION_SETTINGS } from '@/types';
+
+const baseProfile = {
+  language: 'en' as const,
+  notifications: { ...DEFAULT_NOTIFICATION_SETTINGS },
+};
+
+export const users: User[] = [
+  {
+    id: 'user-alex',
+    name: 'Alex Johnson',
+    email: 'alex@example.com',
+    phone: '+1 (555) 201-3344',
+    title: 'UI/UX Designer',
+    avatarUrl: 'https://i.pravatar.cc/150?u=alex',
+    role: 'poster',
+    profileRole: 'both',
+    badge: 'Premium Member',
+    companyId: 'company-freelance',
+    ...baseProfile,
+  },
+  {
+    id: 'user-sarah',
+    name: 'Sarah Jenkins',
+    email: 'sarah@stripe.com',
+    title: 'Talent Lead',
+    avatarUrl: 'https://i.pravatar.cc/150?u=sarah',
+    role: 'poster',
+    profileRole: 'poster',
+    companyId: 'company-stripe',
+    ...baseProfile,
+  },
+  {
+    id: 'user-mike',
+    name: 'Mike Ross',
+    email: 'mike@vercel.com',
+    title: 'Engineering Manager',
+    avatarUrl: 'https://i.pravatar.cc/150?u=mike',
+    role: 'poster',
+    profileRole: 'poster',
+    companyId: 'company-vercel',
+    ...baseProfile,
+  },
+  {
+    id: 'user-emily',
+    name: 'Emily Chen',
+    email: 'emily@notion.com',
+    title: 'Recruiter',
+    avatarUrl: 'https://i.pravatar.cc/150?u=emily',
+    role: 'poster',
+    profileRole: 'poster',
+    companyId: 'company-notion',
+    ...baseProfile,
+  },
+  {
+    id: 'user-jordan',
+    name: 'Jordan Lee',
+    email: 'jordan@example.com',
+    phone: '+1 (555) 882-1190',
+    title: 'Frontend Developer',
+    avatarUrl: 'https://i.pravatar.cc/150?u=jordan',
+    role: 'seeker',
+    profileRole: 'seeker',
+    ...baseProfile,
+  },
+  {
+    id: 'user-admin',
+    name: 'Admin User',
+    email: 'admin@jobmarket.app',
+    title: 'Platform Administrator',
+    avatarUrl: 'https://i.pravatar.cc/150?u=admin',
+    role: 'admin',
+    profileRole: 'both',
+    badge: 'Admin',
+    ...baseProfile,
+  },
+];

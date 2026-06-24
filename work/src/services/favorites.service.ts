@@ -1,0 +1,67 @@
+import { favorites as favoritesData, FAVORITES_STORAGE_KEY } from '@/data';
+import { isBackendEnabled } from '@/lib/backend/config';
+import { supabaseFavoritesRepository } from '@/lib/supabase/repositories/favorites.repository';
+import { authService } from '@/services/auth.service';
+
+function readStorage(): Set<string> {
+  if (typeof window === 'undefined') {
+    return new Set(favoritesData.map((f) => f.jobId));
+  }
+  try {
+    const raw = localStorage.getItem(FAVORITES_STORAGE_KEY);
+    if (raw) {
+      const ids = JSON.parse(raw) as string[];
+      return new Set(ids);
+    }
+  } catch {
+    /* use seed */
+  }
+  return new Set(favoritesData.map((f) => f.jobId));
+}
+
+function writeStorage(jobIds: Set<string>): void {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify([...jobIds]));
+}
+
+export const favoritesService = {
+  getFavoriteJobIds(): Set<string> {
+    return readStorage();
+  },
+
+  async getFavoriteJobIdsAsync(): Promise<Set<string>> {
+    if (isBackendEnabled()) {
+      return supabaseFavoritesRepository.getFavoriteIds(authService.getCurrentUserId());
+    }
+    return readStorage();
+  },
+
+  isFavorite(jobId: string): boolean {
+    return readStorage().has(jobId);
+  },
+
+  async isFavoriteAsync(jobId: string): Promise<boolean> {
+    const ids = await this.getFavoriteJobIdsAsync();
+    return ids.has(jobId);
+  },
+
+  toggleFavorite(jobId: string): boolean {
+    const ids = readStorage();
+    const isNowSaved = !ids.has(jobId);
+    if (isNowSaved) ids.add(jobId);
+    else ids.delete(jobId);
+    writeStorage(ids);
+    return isNowSaved;
+  },
+
+  async toggleFavoriteAsync(jobId: string): Promise<boolean> {
+    if (isBackendEnabled()) {
+      return supabaseFavoritesRepository.toggle(authService.getCurrentUserId(), jobId);
+    }
+    return this.toggleFavorite(jobId);
+  },
+
+  getSeedIds(): string[] {
+    return favoritesData.map((f) => f.jobId);
+  },
+};

@@ -1,0 +1,115 @@
+'use client';
+
+import React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import {
+  Home,
+  Bookmark,
+  Plus,
+  MessageCircle,
+  Settings,
+  Briefcase,
+  Search,
+  Map,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { usersService } from '@/services';
+import { UserAvatar } from '@/components/profile/UserAvatar';
+
+interface NavItem {
+  href: string;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  label: string;
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { href: '/home', icon: Home, label: 'Home' },
+  { href: '/search', icon: Search, label: 'Search' },
+  { href: '/map', icon: Map, label: 'Map View' },
+  { href: '/favorites', icon: Bookmark, label: 'Favorites' },
+  { href: '/chat', icon: MessageCircle, label: 'Messages' },
+  { href: '/settings', icon: Settings, label: 'Settings' },
+];
+
+export function DesktopNavigation() {
+  const pathname = usePathname();
+  const currentUser = usersService.getCurrentUser();
+
+  return (
+    <aside className="hidden md:flex flex-col w-[17.5rem] lg:w-72 h-screen border-r border-[var(--color-border)] bg-white sticky top-0 shrink-0">
+      <div className="p-6 border-b border-[var(--color-border)]">
+        <Link href="/home" className="flex items-center gap-3">
+          <div className="w-11 h-11 bg-[var(--color-primary)] text-white rounded-xl flex items-center justify-center shadow-md shadow-blue-500/25">
+            <Briefcase className="w-6 h-6" />
+          </div>
+          <div>
+            <span className="text-xl font-bold text-[var(--color-secondary)] tracking-tight block leading-tight">
+              JobMarket
+            </span>
+            <span className="text-[10px] font-medium text-[var(--color-success)] uppercase tracking-wider">
+              Find work
+            </span>
+          </div>
+        </Link>
+      </div>
+
+      <div className="p-4">
+        <Link
+          href="/create"
+          className="flex items-center justify-center gap-2 w-full py-3 bg-[var(--color-accent)] text-white rounded-xl font-semibold hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/25 transition-all"
+        >
+          <Plus className="w-5 h-5" strokeWidth={2.5} />
+          <span>Post a Job</span>
+        </Link>
+      </div>
+
+      <nav className="flex-1 px-3 overflow-y-auto hide-scrollbar" aria-label="Desktop navigation">
+        <p className="text-[10px] font-bold text-[var(--color-muted)] uppercase tracking-wider mb-2 px-3">
+          Menu
+        </p>
+        <div className="flex flex-col gap-0.5">
+          {NAV_ITEMS.map((item) => {
+            const isActive =
+              pathname === item.href ||
+              (item.href !== '/home' && pathname?.startsWith(item.href));
+            const Icon = item.icon;
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-sm font-medium',
+                  isActive
+                    ? 'bg-[var(--color-primary-light)] text-[var(--color-primary)]'
+                    : 'text-[var(--color-muted)] hover:bg-gray-50 hover:text-[var(--color-secondary)]'
+                )}
+              >
+                <Icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 2} />
+                <span className={isActive ? 'font-semibold' : ''}>{item.label}</span>
+                {isActive && (
+                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]" />
+                )}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+
+      <div className="p-4 border-t border-[var(--color-border)]">
+        <Link href="/profile" className="card card-hover p-3 flex items-center gap-3">
+          <UserAvatar src={currentUser.avatarUrl} alt={currentUser.name} size="md" />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-[var(--color-secondary)] truncate">
+              {currentUser.name}
+            </p>
+            <p className="text-xs text-[var(--color-success)] font-medium truncate">
+              {currentUser.badge}
+            </p>
+          </div>
+        </Link>
+      </div>
+    </aside>
+  );
+}
