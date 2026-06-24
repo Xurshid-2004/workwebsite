@@ -63,16 +63,34 @@ export const firebaseAuthRepository: AuthRepository = {
   },
 
   async getSession(): Promise<AuthSession | null> {
-    const user = getFirebaseAuth().currentUser;
-    if (!user) return null;
+    const auth = getFirebaseAuth();
+    if (auth.currentUser) {
+      const user = auth.currentUser;
+      return {
+        userId: user.uid,
+        email: user.email ?? '',
+        provider: 'firebase',
+        isMock: false,
+        createdAt: user.metadata.creationTime ?? new Date().toISOString(),
+      };
+    }
 
-    return {
-      userId: user.uid,
-      email: user.email ?? '',
-      provider: 'firebase',
-      isMock: false,
-      createdAt: user.metadata.creationTime ?? new Date().toISOString(),
-    };
+    return new Promise((resolve) => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        unsubscribe();
+        if (!user) {
+          resolve(null);
+          return;
+        }
+        resolve({
+          userId: user.uid,
+          email: user.email ?? '',
+          provider: 'firebase',
+          isMock: false,
+          createdAt: user.metadata.creationTime ?? new Date().toISOString(),
+        });
+      });
+    });
   },
 
   async getAuthUser() {

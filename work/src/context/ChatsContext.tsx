@@ -10,6 +10,8 @@ import React, {
 } from 'react';
 import type { Chat, ChatPreview, ChatThreadView, Message } from '@/types';
 import { chatsService } from '@/services/chats.service';
+import { isBackendEnabled } from '@/lib/backend/config';
+import { useAuth } from '@/context/AuthContext';
 
 interface ChatsContextValue {
   chats: ChatPreview[];
@@ -28,6 +30,7 @@ interface ChatsContextValue {
 const ChatsContext = createContext<ChatsContextValue | null>(null);
 
 export function ChatsProvider({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isHydrated: authHydrated } = useAuth();
   const [chats, setChats] = useState<ChatPreview[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,6 +43,14 @@ export function ChatsProvider({ children }: { children: React.ReactNode }) {
     let cancelled = false;
 
     async function load() {
+      if (isBackendEnabled() && (!authHydrated || !isAuthenticated)) {
+        setChats([]);
+        setError(null);
+        setIsHydrated(true);
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       setError(null);
       try {
@@ -61,7 +72,7 @@ export function ChatsProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [version]);
+  }, [version, authHydrated, isAuthenticated]);
 
   const totalUnread = useMemo(
     () => chats.reduce((sum, chat) => sum + (chat.unread ?? 0), 0),

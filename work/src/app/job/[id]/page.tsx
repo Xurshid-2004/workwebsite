@@ -24,6 +24,7 @@ import Image from 'next/image';
 import { JobDetailMapPreview } from '@/components/map/JobDetailMapPreview';
 import { mapService } from '@/services';
 import { authService } from '@/services/auth.service';
+import { useAuth } from '@/context/AuthContext';
 
 export default function JobDetailPage() {
   const params = useParams();
@@ -32,6 +33,7 @@ export default function JobDetailPage() {
   const { job, similarJobs, rawJob, isLoading, error } = useJob(id);
   const { isFavorite, toggleFavorite } = useFavorites();
   const { getOrCreateChatForJob } = useChats();
+  const { isAuthenticated } = useAuth();
 
   if (isLoading) {
     return (
@@ -57,12 +59,22 @@ export default function JobDetailPage() {
   const isSaved = isFavorite(job.id);
 
   const handleSave = async () => {
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
     const newState = await toggleFavorite(job.id);
     toast.success(newState ? 'Job saved to Favorites' : 'Job removed from Favorites');
   };
 
   const handleContact = async () => {
-    if (rawJob.posterId === authService.getCurrentUserId()) {
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+
+    const userId = authService.getCurrentUserId();
+    if (rawJob.posterId === userId) {
       router.push('/chat');
       toast.info('Open messages from applicants on your listings.');
       return;

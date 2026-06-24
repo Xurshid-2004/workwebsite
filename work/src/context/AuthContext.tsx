@@ -48,18 +48,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
+    const repo = authService.getRepository();
 
-    async function init() {
-      const session = await authService.hydrateSession();
-      if (!cancelled && session) {
-        const user = await authService.getUserById(session.userId);
-        if (user) setUser(user);
-        setSession(session);
+    const applySession = async (nextSession: AuthSession | null) => {
+      if (cancelled) return;
+
+      if (nextSession) {
+        const nextUser = await authService.getUserById(nextSession.userId);
+        setSession(nextSession);
+        if (nextUser) setUser(nextUser);
+      } else {
+        setSession(null);
+        setUser(authService.getCurrentUser());
       }
-      if (!cancelled) setIsHydrated(true);
+      setIsHydrated(true);
+    };
+
+    if (repo.onAuthStateChanged) {
+      const unsubscribe = repo.onAuthStateChanged((nextSession) => {
+        void applySession(nextSession);
+      });
+      return () => {
+        cancelled = true;
+        unsubscribe();
+      };
     }
 
-    void init();
+    void authService.hydrateSession().then((nextSession) => applySession(nextSession));
 
     return () => {
       cancelled = true;

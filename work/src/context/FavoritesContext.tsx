@@ -12,6 +12,7 @@ import { favoritesService } from '@/services/favorites.service';
 import { jobsService } from '@/services/jobs.service';
 import type { JobListItem } from '@/types';
 import { isBackendEnabled } from '@/lib/backend/config';
+import { useAuth } from '@/context/AuthContext';
 
 interface FavoritesContextValue {
   favoriteIds: Set<string>;
@@ -27,6 +28,7 @@ interface FavoritesContextValue {
 const FavoritesContext = createContext<FavoritesContextValue | null>(null);
 
 export function FavoritesProvider({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isHydrated: authHydrated } = useAuth();
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [savedJobs, setSavedJobs] = useState<JobListItem[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
@@ -40,6 +42,15 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
     let cancelled = false;
 
     async function load() {
+      if (isBackendEnabled() && (!authHydrated || !isAuthenticated)) {
+        setFavoriteIds(new Set());
+        setSavedJobs([]);
+        setError(null);
+        setIsHydrated(true);
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       setError(null);
       try {
@@ -66,7 +77,7 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [version]);
+  }, [version, authHydrated, isAuthenticated]);
 
   const isFavorite = useCallback(
     (jobId: string) => favoriteIds.has(jobId),

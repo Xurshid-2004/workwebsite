@@ -48,8 +48,30 @@ export const authService = {
     return Boolean(authStore.getSession());
   },
 
+  getOptionalUserId(): string | null {
+    const sessionUserId = authStore.getSession()?.userId;
+    if (sessionUserId) return sessionUserId;
+    return isBackendEnabled() ? null : DEFAULT_DEMO_USER_ID;
+  },
+
   getCurrentUserId(): string {
-    return authStore.getSession()?.userId ?? DEFAULT_DEMO_USER_ID;
+    const sessionUserId = authStore.getSession()?.userId;
+    if (sessionUserId) return sessionUserId;
+    if (isBackendEnabled()) {
+      throw new Error('Authentication required');
+    }
+    return DEFAULT_DEMO_USER_ID;
+  },
+
+  getCurrentUser(): User {
+    const sessionUserId = authStore.getSession()?.userId;
+    if (sessionUserId) {
+      return this.getUserByIdSync(sessionUserId) ?? mergeSeedUser(seedUsers[0]);
+    }
+    if (isBackendEnabled()) {
+      return mergeSeedUser(seedUsers[0]);
+    }
+    return mergeSeedUser(seedUsers[0]);
   },
 
   async login(credentials: LoginCredentials): Promise<AuthSession> {
@@ -85,10 +107,6 @@ export const authService = {
     return profileStore.getById(userId);
   },
 
-  getCurrentUser(): User {
-    const userId = this.getCurrentUserId();
-    return this.getUserByIdSync(userId) ?? mergeSeedUser(seedUsers[0]);
-  },
 
   async updateProfile(userId: string, patch: UserProfileUpdate): Promise<User | undefined> {
     if (isBackendEnabled()) {
