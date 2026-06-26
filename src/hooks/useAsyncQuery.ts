@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { formatUserError } from '@/lib/errors/format-user-error';
 
 export interface AsyncQueryState<T> {
   data: T;
@@ -34,7 +35,7 @@ export function useAsyncQuery<T>(
       })
       .catch((err) => {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Something went wrong');
+          setError(formatUserError(err));
         }
       })
       .finally(() => {

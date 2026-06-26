@@ -10,6 +10,7 @@ import React, {
 } from 'react';
 import type { Chat, ChatPreview, ChatThreadView, Message } from '@/types';
 import { chatsService } from '@/services/chats.service';
+import { formatUserError } from '@/lib/errors/format-user-error';
 import { isBackendEnabled } from '@/lib/backend/config';
 import { useAuth } from '@/context/AuthContext';
 
@@ -61,7 +62,7 @@ export function ChatsProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Failed to load chats');
+          setError(formatUserError(err, 'Failed to load chats'));
         }
       } finally {
         if (!cancelled) setIsLoading(false);

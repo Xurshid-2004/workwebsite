@@ -3,7 +3,7 @@
 import { PageHeader } from '@/components/ui/PageHeader';
 import { ChatListItem } from '@/components/chat/ChatListItem';
 import { ChatEmptyState } from '@/components/chat/ChatEmptyState';
-import { Skeleton } from '@/components/ui/LoadingState';
+import { ChatListSkeleton } from '@/components/ui/LoadingState';
 import { QueryErrorBanner } from '@/components/ui/QueryErrorBanner';
 import { useChats } from '@/context/ChatsContext';
 
@@ -11,14 +11,7 @@ export function ChatListContent() {
   const { chats, isHydrated, isLoading, error, refresh, totalUnread } = useChats();
 
   if (!isHydrated || isLoading) {
-    return (
-      <div className="page-container space-y-3">
-        <Skeleton className="h-8 w-40" />
-        <Skeleton className="h-20 w-full" />
-        <Skeleton className="h-20 w-full" />
-        <Skeleton className="h-20 w-full" />
-      </div>
-    );
+    return <ChatListSkeleton />;
   }
 
   return (

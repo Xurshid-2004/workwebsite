@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { MockAuthNotice } from './MockAuthNotice';
 import { useAuth } from '@/context/AuthContext';
 import { validateLogin, hasAuthErrors, type AuthFormErrors } from '@/lib/validations/auth.validation';
+import { formatUserError } from '@/lib/errors/format-user-error';
 
 export function LoginForm() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export function LoginForm() {
       toast.success('Welcome back!');
       router.push('/home');
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Login failed');
+      toast.error(formatUserError(err, 'Login failed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -61,8 +62,8 @@ export function LoginForm() {
         hint={isMockAuth ? 'Any password works in mock mode' : undefined}
       />
 
-      <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-        {isSubmitting ? 'Signing in…' : 'Sign in'}
+      <Button type="submit" className="w-full" size="lg" isLoading={isSubmitting}>
+        Sign in
       </Button>
 
       <p className="text-center text-sm text-[var(--color-muted)]">

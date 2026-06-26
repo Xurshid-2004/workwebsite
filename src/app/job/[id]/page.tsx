@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/Button';
 import { JobCard } from '@/components/jobs/JobCard';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { JobDetailSkeleton } from '@/components/ui/LoadingState';
 import { useJob } from '@/hooks/useJob';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useChats } from '@/context/ChatsContext';
@@ -25,22 +26,19 @@ import { JobDetailMapPreview } from '@/components/map/JobDetailMapPreview';
 import { mapService } from '@/services';
 import { authService } from '@/services/auth.service';
 import { useAuth } from '@/context/AuthContext';
+import { formatUserError } from '@/lib/errors/format-user-error';
 
 export default function JobDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
-  const { job, similarJobs, rawJob, isLoading, error } = useJob(id);
+  const { job, similarJobs, rawJob, isLoading, error, refetch } = useJob(id);
   const { isFavorite, toggleFavorite } = useFavorites();
   const { getOrCreateChatForJob } = useChats();
   const { isAuthenticated } = useAuth();
 
   if (isLoading) {
-    return (
-      <div className="page-container min-h-screen flex items-center justify-center">
-        <p className="text-sm text-[var(--color-muted)]">Loading job…</p>
-      </div>
-    );
+    return <JobDetailSkeleton />;
   }
 
   if (!job || !rawJob) {
@@ -49,8 +47,18 @@ export default function JobDetailPage() {
         <EmptyState
           icon={AlertCircle}
           title={error ? 'Failed to load job' : 'Job not found'}
-          description={error ?? 'This listing may have been removed or is no longer available.'}
-          action={<Button onClick={() => router.push('/search')}>Back to search</Button>}
+          description={
+            error
+              ? formatUserError(error)
+              : 'This listing may have been removed or is no longer available.'
+          }
+          action={
+            error ? (
+              <Button onClick={() => refetch()}>Try again</Button>
+            ) : (
+              <Button onClick={() => router.push('/search')}>Back to search</Button>
+            )
+          }
         />
       </div>
     );

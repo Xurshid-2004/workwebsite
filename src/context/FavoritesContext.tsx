@@ -13,6 +13,7 @@ import { jobsService } from '@/services/jobs.service';
 import type { JobListItem } from '@/types';
 import { isBackendEnabled } from '@/lib/backend/config';
 import { useAuth } from '@/context/AuthContext';
+import { formatUserError } from '@/lib/errors/format-user-error';
 
 interface FavoritesContextValue {
   favoriteIds: Set<string>;
@@ -66,7 +67,7 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Failed to load favorites');
+          setError(formatUserError(err, 'Failed to load favorites'));
         }
       } finally {
         if (!cancelled) setIsLoading(false);
@@ -86,13 +87,25 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
 
   const toggleFavorite = useCallback(
     async (jobId: string) => {
-      const isNowSaved = isBackendEnabled()
-        ? await favoritesService.toggleFavoriteAsync(jobId)
-        : favoritesService.toggleFavorite(jobId);
-      refresh();
-      return isNowSaved;
+      const previous = favoriteIds;
+      const wasSaved = previous.has(jobId);
+      const optimistic = new Set(previous);
+      if (wasSaved) optimistic.delete(jobId);
+      else optimistic.add(jobId);
+      setFavoriteIds(optimistic);
+
+      try {
+        const isNowSaved = isBackendEnabled()
+          ? await favoritesService.toggleFavoriteAsync(jobId)
+          : favoritesService.toggleFavorite(jobId);
+        refresh();
+        return isNowSaved;
+      } catch (err) {
+        setFavoriteIds(previous);
+        throw err;
+      }
     },
-    [refresh]
+    [favoriteIds, refresh]
   );
 
   const value = useMemo(

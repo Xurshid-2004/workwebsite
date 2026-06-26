@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { AuthGateSkeleton } from '@/components/ui/LoadingState';
 
 interface RequireAuthProps {
   children: React.ReactNode;
@@ -25,19 +26,11 @@ export function RequireAuth({ children, redirectTo = '/login' }: RequireAuthProp
   }, [isAuthenticated, isHydrated, user.blocked, redirectTo, router]);
 
   if (!isHydrated) {
-    return (
-      <div className="page-container min-h-[40vh] flex items-center justify-center">
-        <p className="text-sm text-[var(--color-muted)]">Loading…</p>
-      </div>
-    );
+    return <AuthGateSkeleton />;
   }
 
   if (!isAuthenticated || user.blocked) {
-    return (
-      <div className="page-container min-h-[40vh] flex items-center justify-center">
-        <p className="text-sm text-[var(--color-muted)]">Redirecting to sign in…</p>
-      </div>
-    );
+    return <AuthGateSkeleton />;
   }
 
   return <>{children}</>;

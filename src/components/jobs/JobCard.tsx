@@ -4,11 +4,14 @@ import React from 'react';
 import type { JobListItem } from '@/types';
 import { Bookmark, MapPin, Clock } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { useFavorites } from '@/context/FavoritesContext';
+import { useAuth } from '@/context/AuthContext';
+import { formatUserError } from '@/lib/errors/format-user-error';
 
 export interface JobCardProps {
   job: JobListItem;
@@ -22,6 +25,8 @@ const itemVariants = {
 };
 
 export function JobCard({ job, index = 0, featured }: JobCardProps) {
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
   const isSaved = isFavorite(job.id);
   const showFeatured = featured ?? job.isFeatured;
@@ -29,12 +34,20 @@ export function JobCard({ job, index = 0, featured }: JobCardProps) {
   const handleSave = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const newState = await toggleFavorite(job.id);
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
 
-    if (newState) {
-      toast.success('Job saved to Favorites');
-    } else {
-      toast.info('Job removed from Favorites');
+    try {
+      const newState = await toggleFavorite(job.id);
+      if (newState) {
+        toast.success('Job saved to Favorites');
+      } else {
+        toast.info('Job removed from Favorites');
+      }
+    } catch (err) {
+      toast.error(formatUserError(err, 'Could not update favorites'));
     }
   };
 

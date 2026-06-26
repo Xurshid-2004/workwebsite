@@ -15,6 +15,7 @@ import {
   PROFILE_ROLE_OPTIONS,
   type AuthFormErrors,
 } from '@/lib/validations/auth.validation';
+import { formatUserError } from '@/lib/errors/format-user-error';
 import { cn } from '@/lib/utils';
 
 export function RegisterForm() {
@@ -46,7 +47,7 @@ export function RegisterForm() {
       toast.success('Account created!');
       router.push('/home');
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Registration failed');
+      toast.error(formatUserError(err, 'Registration failed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -123,8 +124,8 @@ export function RegisterForm() {
         autoComplete="new-password"
       />
 
-      <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-        {isSubmitting ? 'Creating account…' : 'Create account'}
+      <Button type="submit" className="w-full" size="lg" isLoading={isSubmitting}>
+        Create account
       </Button>
 
       <p className="text-center text-sm text-[var(--color-muted)]">

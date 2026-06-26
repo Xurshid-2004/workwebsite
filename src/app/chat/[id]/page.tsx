@@ -6,9 +6,11 @@ import { ChatHeader } from '@/components/chat/ChatHeader';
 import { MessageList } from '@/components/chat/MessageList';
 import { MessageInput } from '@/components/chat/MessageInput';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { ChatThreadSkeleton } from '@/components/ui/LoadingState';
 import { Button } from '@/components/ui/Button';
 import { useChat } from '@/hooks/useChat';
 import { RequireAuth } from '@/components/auth/RequireAuth';
+import { formatUserError } from '@/lib/errors/format-user-error';
 
 function ChatDetailContent() {
   const params = useParams();
@@ -18,11 +20,7 @@ function ChatDetailContent() {
     useChat(chatId);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-6">
-        <p className="text-sm text-[var(--color-muted)]">Loading conversation…</p>
-      </div>
-    );
+    return <ChatThreadSkeleton />;
   }
 
   if (!thread || !header) {
@@ -31,7 +29,11 @@ function ChatDetailContent() {
         <EmptyState
           icon={AlertCircle}
           title={error ? 'Failed to load chat' : 'Chat not found'}
-          description={error ?? 'This conversation may have been removed or is no longer available.'}
+          description={
+            error
+              ? formatUserError(error)
+              : 'This conversation may have been removed or is no longer available.'
+          }
           action={
             error ? (
               <Button onClick={() => void refetch()}>Try again</Button>
