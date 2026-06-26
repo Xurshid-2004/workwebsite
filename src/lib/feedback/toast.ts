@@ -21,4 +21,12 @@ export const appToast = {
   saved(resource = 'Changes') {
     toast.success(`${resource} saved`);
   },
+
+  favoriteToggled(saved: boolean) {
+    if (saved) {
+      toast.success('Job saved to Favorites');
+    } else {
+      toast.info('Job removed from Favorites');
+    }
+  },
 };

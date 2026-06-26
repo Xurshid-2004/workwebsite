@@ -10,11 +10,13 @@ import { JobListSkeleton } from '@/components/ui/LoadingState';
 import { QueryErrorBanner } from '@/components/ui/QueryErrorBanner';
 import { RequireAuth } from '@/components/auth/RequireAuth';
 import { useMyJobPosts } from '@/hooks/useMyJobs';
+import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { Briefcase } from 'lucide-react';
 import { JOB_STATUS_LABELS } from '@/types';
 import { cn } from '@/lib/utils';
 
 export default function MyJobsPage() {
+  useScrollRestore();
   const { jobs, isLoading, error, refetch } = useMyJobPosts();
 
   return (
@@ -22,6 +24,7 @@ export default function MyJobsPage() {
     <div className="page-container">
       <PageHeader
         title="My Job Posts"
+        onRefresh={refetch}
         subtitle={
           jobs.length > 0
             ? `You have ${jobs.length} listing${jobs.length === 1 ? '' : 's'}.`

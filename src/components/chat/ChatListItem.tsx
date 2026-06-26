@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import type { ChatPreview } from '@/types';
 import { UserAvatar } from '@/components/profile/UserAvatar';
 import { Briefcase } from 'lucide-react';
@@ -8,12 +9,25 @@ import { cn } from '@/lib/utils';
 
 interface ChatListItemProps {
   chat: ChatPreview;
+  index?: number;
 }
 
-export function ChatListItem({ chat }: ChatListItemProps) {
+const itemVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0 },
+};
+
+export function ChatListItem({ chat, index = 0 }: ChatListItemProps) {
   return (
-    <Link href={`/chat/${chat.id}`} className="block">
-      <div className="card card-hover p-4 flex items-center gap-3.5">
+    <Link href={`/chat/${chat.id}`} className="block touch-manipulation">
+      <motion.div
+        variants={itemVariants}
+        initial="hidden"
+        animate="visible"
+        transition={{ duration: 0.3, delay: index * 0.05, ease: 'easeOut' }}
+        whileTap={{ scale: 0.99 }}
+        className="card card-hover p-4 flex items-center gap-3.5"
+      >
         <div className="relative shrink-0">
           <UserAvatar src={chat.userAvatar} alt={chat.userName} size="lg" />
           {chat.unread ? (
@@ -55,7 +69,7 @@ export function ChatListItem({ chat }: ChatListItemProps) {
             {chat.lastMessage}
           </p>
         </div>
-      </div>
+      </motion.div>
     </Link>
   );
 }

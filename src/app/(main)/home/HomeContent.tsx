@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import Link from 'next/link';
 import { Bell, TrendingUp } from 'lucide-react';
 import { JobCard } from '@/components/jobs/JobCard';
@@ -8,17 +8,27 @@ import { SearchBar } from '@/components/jobs/SearchBar';
 import { CategoryCard } from '@/components/jobs/CategoryCard';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { PageHeader } from '@/components/ui/PageHeader';
+import { RefreshButton } from '@/components/ui/RefreshButton';
 import { JobListSkeleton } from '@/components/ui/LoadingState';
 import { QueryErrorBanner } from '@/components/ui/QueryErrorBanner';
 import { useFeaturedJobs, useRecentJobs } from '@/hooks/useJobs';
 import { useCategories } from '@/hooks/useCategories';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useScrollRestore } from '@/hooks/useScrollRestore';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 export function HomeContent() {
+  useScrollRestore();
   const user = useCurrentUser();
   const featured = useFeaturedJobs(2);
   const recent = useRecentJobs(4);
   const categoriesResult = useCategories();
+
+  const refreshAll = useCallback(async () => {
+    await Promise.all([featured.refetch(), recent.refetch(), categoriesResult.refetch()]);
+  }, [featured, recent, categoriesResult]);
+
+  usePullToRefresh(refreshAll);
 
   const featuredJobs = featured.data;
   const recentJobs = recent.data;
@@ -32,14 +42,17 @@ export function HomeContent() {
         greeting={`Hello, ${user.name.split(' ')[0]} 👋`}
         title="Find your dream job"
         action={
-          <button
-            type="button"
-            className="w-11 h-11 rounded-xl card flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-primary)] hover:border-[var(--color-primary)]/30 transition-colors relative"
-            aria-label="Notifications"
-          >
+          <div className="flex items-center gap-2">
+            <RefreshButton onRefresh={refreshAll} label="Refresh home feed" />
+            <button
+              type="button"
+              className="w-11 h-11 rounded-xl card flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-primary)] hover:border-[var(--color-primary)]/30 transition-colors relative touch-manipulation active:scale-95"
+              aria-label="Notifications"
+            >
             <Bell className="w-5 h-5" />
             <span className="absolute top-2 right-2 w-2 h-2 bg-[var(--color-accent)] rounded-full ring-2 ring-white" />
-          </button>
+            </button>
+          </div>
         }
       />
 
@@ -47,7 +60,7 @@ export function HomeContent() {
         <SearchBar asLink placeholder="Search jobs, companies, skills..." />
       </div>
 
-      <QueryErrorBanner message={error} onRetry={() => { featured.refetch(); recent.refetch(); categoriesResult.refetch(); }} />
+      <QueryErrorBanner message={error} onRetry={refreshAll} />
 
       {isLoading ? (
         <JobListSkeleton count={3} />

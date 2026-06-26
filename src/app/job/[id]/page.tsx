@@ -18,7 +18,7 @@ import { JobDetailSkeleton } from '@/components/ui/LoadingState';
 import { useJob } from '@/hooks/useJob';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useChats } from '@/context/ChatsContext';
-import { toast } from 'sonner';
+import { appToast } from '@/lib/feedback/toast';
 import { cn } from '@/lib/utils';
 import { AlertCircle } from 'lucide-react';
 import Image from 'next/image';
@@ -72,7 +72,7 @@ export default function JobDetailPage() {
       return;
     }
     const newState = await toggleFavorite(job.id);
-    toast.success(newState ? 'Job saved to Favorites' : 'Job removed from Favorites');
+    appToast.favoriteToggled(newState);
   };
 
   const handleContact = async () => {
@@ -84,7 +84,7 @@ export default function JobDetailPage() {
     const userId = authService.getCurrentUserId();
     if (rawJob.posterId === userId) {
       router.push('/chat');
-      toast.info('Open messages from applicants on your listings.');
+      appToast.info('Open messages from applicants on your listings.');
       return;
     }
 
@@ -92,7 +92,7 @@ export default function JobDetailPage() {
     if (chat) {
       router.push(`/chat/${chat.id}`);
     } else {
-      toast.error('Unable to start conversation.');
+      appToast.error(null, 'Unable to start conversation.');
     }
   };
 

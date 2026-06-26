@@ -3,24 +3,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Bookmark, Plus, MessageCircle, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { isRouteActive, MOBILE_NAV_ITEMS } from '@/lib/navigation/routes';
 import { useChats } from '@/context/ChatsContext';
-
-interface NavItem {
-  href: string;
-  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
-  label: string;
-  isCenter?: boolean;
-}
-
-const NAV_ITEMS: NavItem[] = [
-  { href: '/home', icon: Home, label: 'Home' },
-  { href: '/favorites', icon: Bookmark, label: 'Favorites' },
-  { href: '/create', icon: Plus, label: 'Create', isCenter: true },
-  { href: '/chat', icon: MessageCircle, label: 'Chat' },
-  { href: '/settings', icon: Settings, label: 'Settings' },
-];
 
 export function BottomNavigation() {
   const pathname = usePathname();
@@ -33,10 +18,8 @@ export function BottomNavigation() {
     >
       <div className="glass border-t border-[var(--color-border)] mx-3 mb-3 rounded-2xl shadow-[var(--shadow-nav)]">
         <div className="flex justify-between items-end px-2 py-2">
-          {NAV_ITEMS.map((item) => {
-            const isActive =
-              pathname === item.href ||
-              (item.href !== '/home' && pathname?.startsWith(item.href));
+          {MOBILE_NAV_ITEMS.map((item) => {
+            const isActive = isRouteActive(pathname, item.href);
             const Icon = item.icon;
 
             if (item.isCenter) {
@@ -44,13 +27,26 @@ export function BottomNavigation() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-current={isActive ? 'page' : undefined}
                   className="relative -top-5 flex flex-col items-center"
                   aria-label="Create job"
                 >
-                  <div className="w-[3.25rem] h-[3.25rem] bg-[var(--color-accent)] text-white rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/30 hover:bg-orange-600 hover:scale-105 active:scale-95 transition-all ring-4 ring-[var(--color-background)]">
+                  <div
+                    className={cn(
+                      'w-[3.25rem] h-[3.25rem] text-white rounded-2xl flex items-center justify-center shadow-lg transition-all ring-4 ring-[var(--color-background)]',
+                      isActive
+                        ? 'bg-orange-600 shadow-orange-500/40 scale-105'
+                        : 'bg-[var(--color-accent)] shadow-orange-500/30 hover:bg-orange-600 hover:scale-105 active:scale-95'
+                    )}
+                  >
                     <Icon className="w-6 h-6" strokeWidth={2.5} />
                   </div>
-                  <span className="text-[10px] font-semibold text-[var(--color-accent)] mt-1">
+                  <span
+                    className={cn(
+                      'text-[10px] font-semibold mt-1',
+                      isActive ? 'text-orange-600' : 'text-[var(--color-accent)]'
+                    )}
+                  >
                     {item.label}
                   </span>
                 </Link>
@@ -61,6 +57,7 @@ export function BottomNavigation() {
               <Link
                 key={item.href}
                 href={item.href}
+                aria-current={isActive ? 'page' : undefined}
                 className={cn(
                   'relative flex flex-col items-center justify-center gap-0.5 min-w-[3.5rem] py-2 rounded-xl transition-colors',
                   isActive

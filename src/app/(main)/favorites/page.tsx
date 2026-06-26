@@ -10,9 +10,11 @@ import { JobListSkeleton } from '@/components/ui/LoadingState';
 import { QueryErrorBanner } from '@/components/ui/QueryErrorBanner';
 import { useFavorites } from '@/context/FavoritesContext';
 import { RequireAuth } from '@/components/auth/RequireAuth';
+import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { Bookmark } from 'lucide-react';
 
 export default function FavoritesPage() {
+  useScrollRestore();
   const { savedJobs, isLoading, error, refresh, isHydrated } = useFavorites();
 
   return (
@@ -20,6 +22,7 @@ export default function FavoritesPage() {
     <div className="page-container">
       <PageHeader
         title="Saved Jobs"
+        onRefresh={refresh}
         subtitle={
           savedJobs.length > 0
             ? `You have ${savedJobs.length} job${savedJobs.length === 1 ? '' : 's'} saved for later.`

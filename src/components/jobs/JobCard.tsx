@@ -7,11 +7,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useAuth } from '@/context/AuthContext';
-import { formatUserError } from '@/lib/errors/format-user-error';
+import { appToast } from '@/lib/feedback/toast';
 
 export interface JobCardProps {
   job: JobListItem;
@@ -41,13 +40,9 @@ export function JobCard({ job, index = 0, featured }: JobCardProps) {
 
     try {
       const newState = await toggleFavorite(job.id);
-      if (newState) {
-        toast.success('Job saved to Favorites');
-      } else {
-        toast.info('Job removed from Favorites');
-      }
+      appToast.favoriteToggled(newState);
     } catch (err) {
-      toast.error(formatUserError(err, 'Could not update favorites'));
+      appToast.error(err, 'Could not update favorites');
     }
   };
 

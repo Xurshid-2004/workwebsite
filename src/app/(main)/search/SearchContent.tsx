@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { JobCard } from '@/components/jobs/JobCard';
 import { SearchBar } from '@/components/jobs/SearchBar';
@@ -14,11 +14,14 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { MapPreview } from '@/components/map/MapPreview';
 import { useDisclosure } from '@/hooks/useDisclosure';
 import { useJobSearch } from '@/hooks/useJobSearch';
+import { useScrollRestore } from '@/hooks/useScrollRestore';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { Search } from 'lucide-react';
 import { WORK_TYPE_FILTER_OPTIONS } from '@/lib/filters/job-search';
 import { cn } from '@/lib/utils';
 
 export default function SearchContent() {
+  useScrollRestore();
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category') ?? undefined;
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -46,6 +49,12 @@ export default function SearchContent() {
     refetch,
   } = useJobSearch(categoryParam);
 
+  const handleRefresh = useCallback(async () => {
+    await refetch();
+  }, [refetch]);
+
+  usePullToRefresh(handleRefresh);
+
   const filterPanelProps = {
     params,
     categories,
@@ -60,7 +69,11 @@ export default function SearchContent() {
 
   return (
     <div className="page-container lg:max-w-6xl">
-      <PageHeader title="Search Jobs" subtitle="Find the perfect role for your skills" />
+      <PageHeader
+        title="Search Jobs"
+        subtitle="Find the perfect role for your skills"
+        onRefresh={handleRefresh}
+      />
 
       <div className="mb-5">
         <SearchBar
