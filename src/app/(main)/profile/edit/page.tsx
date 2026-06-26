@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { appToast } from '@/lib/feedback/toast';
 import { ChevronLeft } from 'lucide-react';
 import { ProfileForm } from '@/components/profile/ProfileForm';
 import { RequireAuth } from '@/components/auth/RequireAuth';
@@ -18,10 +18,10 @@ export default function EditProfilePage() {
     setIsSubmitting(true);
     try {
       await updateProfile(patch);
-      toast.success('Profile updated');
+      appToast.saved('Profile');
       router.push('/profile');
-    } catch {
-      toast.error('Could not save profile');
+    } catch (err) {
+      appToast.error(err, 'Could not save profile');
     } finally {
       setIsSubmitting(false);
     }

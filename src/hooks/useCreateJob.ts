@@ -2,7 +2,6 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
 import type { CreateJobFormData, CreateJobFormErrors, CreateJobStep } from '@/types';
 import { EMPTY_CREATE_JOB_FORM } from '@/types';
 import {
@@ -11,6 +10,19 @@ import {
   validateCreateJobStep,
 } from '@/lib/validations/create-job.validation';
 import { jobsService } from '@/services/jobs.service';
+import { appToast } from '@/lib/feedback/toast';
+
+function findFirstInvalidStep(form: CreateJobFormData): CreateJobStep | null {
+  for (let step = 1; step <= 3; step++) {
+    const stepErrors = validateCreateJobStep(step as CreateJobStep, form);
+    if (hasErrors(stepErrors)) return step as CreateJobStep;
+  }
+  return null;
+}
+
+function firstErrorMessage(errors: CreateJobFormErrors): string | undefined {
+  return Object.values(errors).find((message): message is string => Boolean(message));
+}
 
 const STEP_LABELS: Record<CreateJobStep, string> = {
   1: 'Basic info',
@@ -57,9 +69,17 @@ export function useCreateJob() {
   }, [form, step]);
 
   const goNext = useCallback(() => {
-    if (!validateCurrentStep()) return;
+    const stepErrors = validateCreateJobStep(step, form);
+    if (hasErrors(stepErrors)) {
+      setErrors(stepErrors);
+      const message = firstErrorMessage(stepErrors);
+      appToast.validation(message ?? 'Please complete all required fields.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    setErrors({});
     setStep((s) => Math.min(4, s + 1) as CreateJobStep);
-  }, [validateCurrentStep]);
+  }, [form, step]);
 
   const goBack = useCallback(() => {
     setErrors({});
@@ -90,17 +110,21 @@ export function useCreateJob() {
     const allErrors = validateCreateJobForm(form);
     setErrors(allErrors);
     if (hasErrors(allErrors)) {
-      toast.error('Please fix the highlighted fields before publishing.');
+      const invalidStep = findFirstInvalidStep(form);
+      if (invalidStep) setStep(invalidStep);
+      const message = firstErrorMessage(allErrors);
+      appToast.validation(message ?? 'Please fix the highlighted fields before publishing.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     setIsSubmitting(true);
     try {
       const job = await jobsService.createFromForm(form);
-      toast.success('Your job ad has been published!');
+      appToast.success('Your job ad has been published!');
       router.push(`/job/${job.id}`);
-    } catch {
-      toast.error('Something went wrong. Please try again.');
+    } catch (err) {
+      appToast.error(err, 'Could not publish your job. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

@@ -58,8 +58,8 @@ export function Step2SalaryDescription({ form, errors, onChange }: Step2SalaryDe
         value={form.description}
         onChange={(e) => onChange('description', e.target.value)}
         error={errors.description}
+        hint={`${form.description.trim().length} characters · minimum 20`}
       />
-
       <Textarea
         label="Responsibilities"
         rows={4}

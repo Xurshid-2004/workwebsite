@@ -23,6 +23,8 @@ export {
   LoadingState,
 } from './LoadingState';
 export type { SkeletonProps, JobListSkeletonProps, PageLoadingStateProps } from './LoadingState';
+export { FormErrorSummary } from './FormErrorSummary';
+export type { FormErrorSummaryProps } from './FormErrorSummary';
 export { PageHeader } from './PageHeader';
 export type { PageHeaderProps } from './PageHeader';
 export { SectionHeader } from './SectionHeader';

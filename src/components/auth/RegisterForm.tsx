@@ -3,7 +3,6 @@
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
 import type { ProfileRole } from '@/types';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -15,7 +14,7 @@ import {
   PROFILE_ROLE_OPTIONS,
   type AuthFormErrors,
 } from '@/lib/validations/auth.validation';
-import { formatUserError } from '@/lib/errors/format-user-error';
+import { appToast } from '@/lib/feedback/toast';
 import { cn } from '@/lib/utils';
 
 export function RegisterForm() {
@@ -44,10 +43,10 @@ export function RegisterForm() {
     setIsSubmitting(true);
     try {
       await register({ name, email, password, profileRole });
-      toast.success('Account created!');
+      appToast.success('Account created!');
       router.push('/home');
     } catch (err) {
-      toast.error(formatUserError(err, 'Registration failed'));
+      appToast.error(err, 'Registration failed');
     } finally {
       setIsSubmitting(false);
     }

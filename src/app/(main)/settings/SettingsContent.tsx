@@ -13,7 +13,7 @@ import {
   Briefcase,
   Pencil,
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { appToast } from '@/lib/feedback/toast';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { UserAvatar } from '@/components/profile/UserAvatar';
 import { NotificationSettingsPanel } from '@/components/profile/NotificationSettingsPanel';
@@ -38,7 +38,7 @@ export function SettingsContent() {
 
   const handleLogout = async () => {
     await logout();
-    toast.success('Signed out');
+    appToast.success('Signed out');
     router.push('/login');
   };
 
@@ -48,18 +48,18 @@ export function SettingsContent() {
   ) => {
     try {
       await updateProfile({ notifications: { [key]: value } });
-      toast.success('Notification preference saved');
-    } catch {
-      toast.error('Could not save preference');
+      appToast.saved('Notification preference');
+    } catch (err) {
+      appToast.error(err, 'Could not save preference');
     }
   };
 
   const handleLanguageChange = async (language: typeof user.language) => {
     try {
       await updateProfile({ language });
-      toast.success('Language preference saved');
-    } catch {
-      toast.error('Could not save language');
+      appToast.saved('Language preference');
+    } catch (err) {
+      appToast.error(err, 'Could not save language');
     }
   };
 

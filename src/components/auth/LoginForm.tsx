@@ -3,13 +3,12 @@
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { MockAuthNotice } from './MockAuthNotice';
 import { useAuth } from '@/context/AuthContext';
 import { validateLogin, hasAuthErrors, type AuthFormErrors } from '@/lib/validations/auth.validation';
-import { formatUserError } from '@/lib/errors/format-user-error';
+import { appToast } from '@/lib/feedback/toast';
 
 export function LoginForm() {
   const router = useRouter();
@@ -28,10 +27,10 @@ export function LoginForm() {
     setIsSubmitting(true);
     try {
       await login({ email, password });
-      toast.success('Welcome back!');
+      appToast.success('Welcome back!');
       router.push('/home');
     } catch (err) {
-      toast.error(formatUserError(err, 'Login failed'));
+      appToast.error(err, 'Login failed');
     } finally {
       setIsSubmitting(false);
     }

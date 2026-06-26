@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
+import { FormErrorSummary } from '@/components/ui/FormErrorSummary';
 import { useCreateJob } from '@/hooks/useCreateJob';
 import { StepProgress } from './StepProgress';
 import { Step1BasicInfo } from './Step1BasicInfo';
@@ -62,6 +63,7 @@ export function CreateJobWizard() {
       <div className="flex-1 p-4 sm:p-6 overflow-y-auto pb-32">
         <div className="max-w-lg mx-auto">
           <div className="card p-5 sm:p-6">
+            <FormErrorSummary errors={errors} className="mb-4" />
             <AnimatePresence mode="wait">
               <motion.div
                 key={step}
@@ -114,9 +116,9 @@ export function CreateJobWizard() {
               variant="accent"
               className="flex-[2]"
               onClick={submit}
-              disabled={isSubmitting}
+              isLoading={isSubmitting}
             >
-              {isSubmitting ? 'Publishing…' : 'Post Job'}
+              Post Job
             </Button>
           ) : (
             <Button variant="accent" className="flex-[2]" onClick={goNext}>
