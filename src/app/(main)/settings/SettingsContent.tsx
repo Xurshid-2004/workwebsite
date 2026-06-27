@@ -27,18 +27,18 @@ export function SettingsContent() {
   const { user, isAuthenticated, isMockAuth, isAdmin, logout, updateProfile } = useAuth();
 
   const menuItems = [
-    { icon: User, label: 'View profile', href: '/profile', description: 'See your public profile' },
-    { icon: Pencil, label: 'Edit profile', href: '/profile/edit', description: 'Name, phone, avatar, role' },
-    { icon: Briefcase, label: 'My Job Posts', href: '/my-jobs', description: 'Manage your listings' },
+    { icon: User, label: 'Profilni koʻrish', href: '/profile', description: 'Ommaviy profilingiz' },
+    { icon: Pencil, label: 'Profilni tahrirlash', href: '/profile/edit', description: 'Ism, telefon, rasm, rol' },
+    { icon: Briefcase, label: 'Mening eʼlonlarim', href: '/my-jobs', description: 'Eʼlonlaringizni boshqaring' },
     ...(isAdmin
-      ? [{ icon: Shield, label: 'Admin Panel', href: '/admin', description: 'Moderation and platform management' }]
-      : [{ icon: Shield, label: 'Privacy & Security', href: '#', description: 'Password, data (coming soon)' }]),
-    { icon: CircleHelp, label: 'Help & Support', href: '#', description: 'FAQ, contact us' },
+      ? [{ icon: Shield, label: 'Admin panel', href: '/admin', description: 'Moderatsiya va boshqaruv' }]
+      : [{ icon: Shield, label: 'Maxfiylik va xavfsizlik', href: '#', description: 'Parol, maʼlumotlar (tez orada)' }]),
+    { icon: CircleHelp, label: 'Yordam', href: '#', description: 'Savol-javob, biz bilan aloqa' },
   ];
 
   const handleLogout = async () => {
     await logout();
-    appToast.success('Signed out');
+    appToast.success('Chiqildi');
     router.push('/login');
   };
 
@@ -65,7 +65,7 @@ export function SettingsContent() {
 
   return (
     <div className="page-container">
-      <PageHeader title="Settings" subtitle="Account, notifications, and preferences" />
+      <PageHeader title="Sozlamalar" subtitle="Hisob, bildirishnomalar va sozlamalar" />
 
       <Link href="/profile" className="card p-6 mb-6 flex items-center gap-4 card-hover">
         <UserAvatar
@@ -121,7 +121,7 @@ export function SettingsContent() {
       <div className="card p-5 sm:p-6 mb-6">
         <div className="flex items-center gap-2 mb-4">
           <Bell className="w-5 h-5 text-[var(--color-primary)]" />
-          <h3 className="font-semibold text-[var(--color-secondary)]">Notifications</h3>
+          <h3 className="font-semibold text-[var(--color-secondary)]">Bildirishnomalar</h3>
         </div>
         <NotificationSettingsPanel
           settings={user.notifications}
@@ -132,11 +132,11 @@ export function SettingsContent() {
       <div className="card p-5 sm:p-6 mb-6">
         <div className="flex items-center gap-2 mb-4">
           <Globe className="w-5 h-5 text-[var(--color-primary)]" />
-          <h3 className="font-semibold text-[var(--color-secondary)]">Language</h3>
+          <h3 className="font-semibold text-[var(--color-secondary)]">Til</h3>
         </div>
         <LanguageSelector value={user.language} onChange={handleLanguageChange} />
         <p className="text-xs text-[var(--color-muted)] mt-2">
-          Current: {LANGUAGE_LABELS[user.language]}
+          Joriy: {LANGUAGE_LABELS[user.language]}
         </p>
       </div>
 
@@ -150,7 +150,7 @@ export function SettingsContent() {
           )}
         >
           <LogOut className="w-5 h-5" />
-          <span>Log out</span>
+          <span>Chiqish</span>
         </button>
       ) : (
         <div className="grid grid-cols-2 gap-3">
@@ -159,7 +159,7 @@ export function SettingsContent() {
               type="button"
               className="w-full py-3.5 card font-semibold text-[var(--color-primary)] hover:bg-[var(--color-primary-light)]/30 transition-colors"
             >
-              Sign in
+              Kirish
             </button>
           </Link>
           <Link href="/register" className="block">
@@ -167,11 +167,21 @@ export function SettingsContent() {
               type="button"
               className="w-full py-3.5 card font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] transition-colors"
             >
-              Register
+              Roʻyxatdan oʻtish
             </button>
           </Link>
         </div>
       )}
+
+      <p className="text-center text-xs text-[var(--color-muted)] mt-8">
+        <Link href="/legal/privacy" className="hover:text-[var(--color-primary)]">
+          Maxfiylik
+        </Link>
+        {' · '}
+        <Link href="/legal/terms" className="hover:text-[var(--color-primary)]">
+          Shartlar
+        </Link>
+      </p>
     </div>
   );
 }

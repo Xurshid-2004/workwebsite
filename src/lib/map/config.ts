@@ -13,6 +13,20 @@ export const MAP_API_KEYS = {
   yandex: process.env.NEXT_PUBLIC_YANDEX_MAPS_API_KEY ?? '',
 } as const;
 
+/**
+ * Raster tile template for real map imagery (no API key required by default).
+ * OpenStreetMap suits development/portfolio scale; for production scale point
+ * NEXT_PUBLIC_MAP_TILE_URL at your own tile CDN or a keyed provider.
+ * `{z}/{x}/{y}` are slippy-map tile coordinates.
+ */
+export const MAP_TILE_URL =
+  process.env.NEXT_PUBLIC_MAP_TILE_URL ?? 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+export const MAP_TILE_ATTRIBUTION = '© OpenStreetMap';
+
+/** Default focus for "jobs near me" when geolocation is unavailable — Tashkent. */
+export const DEFAULT_MAP_CENTER = { lat: 41.2995, lng: 69.2401 };
+
 export function isMapProviderConfigured(provider: MapProviderId): boolean {
   switch (provider) {
     case 'placeholder':
@@ -36,14 +50,26 @@ export function getActiveMapProvider(): MapProviderId {
   return 'placeholder';
 }
 
-/** Default viewport for coordinate → percent projection (continental US demo) */
+/** Default viewport for coordinate → percent projection — Uzbekistan. */
 export const DEFAULT_MAP_VIEWPORT: MapViewport = {
-  center: { lat: 39.8283, lng: -98.5795 },
-  zoom: 4,
+  center: { lat: 41.3775, lng: 64.5853 },
+  zoom: 6,
   bounds: {
-    north: 49.38,
-    south: 24.52,
-    west: -124.77,
-    east: -66.95,
+    north: 45.6,
+    south: 37.2,
+    west: 55.9,
+    east: 73.2,
+  },
+};
+
+/** Tighter bounds focused on Greater Tashkent, where most listings cluster. */
+export const TASHKENT_VIEWPORT: MapViewport = {
+  center: { lat: 41.2995, lng: 69.2401 },
+  zoom: 11,
+  bounds: {
+    north: 41.42,
+    south: 41.18,
+    west: 69.1,
+    east: 69.42,
   },
 };

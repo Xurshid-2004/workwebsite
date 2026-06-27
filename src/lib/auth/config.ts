@@ -1,20 +1,24 @@
 import type { AuthProviderId } from '@/types';
 import { isFirebaseConfigured } from '@/lib/firebase/client';
+import { isRestBackendEnabled } from '@/lib/api/config';
 
 /**
  * Auth provider configuration.
- * Set NEXT_PUBLIC_AUTH_PROVIDER=firebase with Firebase env vars for real auth.
+ * REST API takes priority when NEXT_PUBLIC_API_URL is set.
  */
-export const AUTH_PROVIDER: AuthProviderId =
-  (process.env.NEXT_PUBLIC_AUTH_PROVIDER as AuthProviderId | undefined) ?? 'mock';
-
-export function isMockAuthEnabled(): boolean {
-  return getActiveAuthProvider() === 'mock';
-}
-
 export function getActiveAuthProvider(): AuthProviderId {
-  if (AUTH_PROVIDER === 'firebase' && isFirebaseConfigured()) {
+  if (isRestBackendEnabled()) return 'rest';
+  if (
+    (process.env.NEXT_PUBLIC_AUTH_PROVIDER as AuthProviderId | undefined) === 'firebase' &&
+    isFirebaseConfigured()
+  ) {
     return 'firebase';
   }
   return 'mock';
+}
+
+export const AUTH_PROVIDER: AuthProviderId = getActiveAuthProvider();
+
+export function isMockAuthEnabled(): boolean {
+  return getActiveAuthProvider() === 'mock';
 }

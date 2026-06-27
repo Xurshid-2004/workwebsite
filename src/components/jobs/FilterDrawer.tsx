@@ -69,8 +69,8 @@ function FilterDrawerPanel({
       <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl max-h-[85vh] flex flex-col">
         <div className="flex items-center justify-between p-5 border-b border-[var(--color-border)] shrink-0">
           <div>
-            <h2 className="text-lg font-bold text-[var(--color-secondary)]">{title ?? 'Filters'}</h2>
-            <p className="text-xs text-[var(--color-muted)] mt-0.5">{resultCount} jobs match</p>
+            <h2 className="text-lg font-bold text-[var(--color-secondary)]">{title ?? 'Filtrlar'}</h2>
+            <p className="text-xs text-[var(--color-muted)] mt-0.5">{resultCount} ta ish mos keladi</p>
           </div>
           <button
             type="button"
@@ -88,7 +88,7 @@ function FilterDrawerPanel({
 
         <div className="p-5 border-t border-[var(--color-border)] pb-safe shrink-0 flex gap-3">
           <Button variant="outline" className="flex-1" onClick={onClose}>
-            Cancel
+            Bekor qilish
           </Button>
           <Button
             className="flex-[2]"
@@ -97,7 +97,7 @@ function FilterDrawerPanel({
               onClose();
             }}
           >
-            Apply filters
+            Filtrlash
           </Button>
         </div>
       </div>

@@ -8,7 +8,7 @@ export interface SectionHeaderProps {
   className?: string;
 }
 
-export function SectionHeader({ title, href, linkLabel = 'See all', className }: SectionHeaderProps) {
+export function SectionHeader({ title, href, linkLabel = 'Barchasi', className }: SectionHeaderProps) {
   return (
     <div className={cn('flex justify-between items-center mb-4', className)}>
       <h2 className="text-lg sm:text-xl font-bold text-[var(--color-secondary)]">{title}</h2>

@@ -43,10 +43,10 @@ export function RegisterForm() {
     setIsSubmitting(true);
     try {
       await register({ name, email, password, profileRole });
-      appToast.success('Account created!');
+      appToast.success('Hisob yaratildi!');
       router.push('/home');
     } catch (err) {
-      appToast.error(err, 'Registration failed');
+      appToast.error(err, 'Roʻyxatdan oʻtishda xatolik');
     } finally {
       setIsSubmitting(false);
     }
@@ -57,11 +57,11 @@ export function RegisterForm() {
       {isMockAuth && <MockAuthNotice />}
 
       <Input
-        label="Full name"
+        label="Toʻliq ism"
         value={name}
         onChange={(e) => setName(e.target.value)}
         error={errors.name}
-        placeholder="Alex Johnson"
+        placeholder="Ism Familiya"
         autoComplete="name"
       />
 
@@ -76,7 +76,7 @@ export function RegisterForm() {
       />
 
       <div>
-        <p className="text-sm font-medium text-[var(--color-secondary)] mb-2">I want to</p>
+        <p className="text-sm font-medium text-[var(--color-secondary)] mb-2">Maqsadim</p>
         <div className="grid grid-cols-1 gap-2">
           {PROFILE_ROLE_OPTIONS.map((opt) => (
             <button
@@ -105,17 +105,17 @@ export function RegisterForm() {
       </div>
 
       <Input
-        label="Password"
+        label="Parol"
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         error={errors.password}
         autoComplete="new-password"
-        hint="At least 6 characters (not stored in mock mode)"
+        hint="Kamida 6 ta belgi (mock rejimda saqlanmaydi)"
       />
 
       <Input
-        label="Confirm password"
+        label="Parolni tasdiqlang"
         type="password"
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
@@ -124,13 +124,13 @@ export function RegisterForm() {
       />
 
       <Button type="submit" className="w-full" size="lg" isLoading={isSubmitting}>
-        Create account
+        Roʻyxatdan oʻtish
       </Button>
 
       <p className="text-center text-sm text-[var(--color-muted)]">
-        Already have an account?{' '}
+        Hisobingiz bormi?{' '}
         <Link href="/login" className="text-[var(--color-primary)] font-semibold hover:underline">
-          Sign in
+          Kiring
         </Link>
       </p>
     </form>

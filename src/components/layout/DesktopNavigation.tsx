@@ -22,10 +22,10 @@ export function DesktopNavigation() {
           </div>
           <div>
             <span className="text-xl font-bold text-[var(--color-secondary)] tracking-tight block leading-tight">
-              JobMarket
+              IshTop
             </span>
             <span className="text-[10px] font-medium text-[var(--color-success)] uppercase tracking-wider">
-              Find work
+              Ish topish oson
             </span>
           </div>
         </Link>
@@ -42,13 +42,13 @@ export function DesktopNavigation() {
           )}
         >
           <Plus className="w-5 h-5" strokeWidth={2.5} />
-          <span>Post a Job</span>
+          <span>Ish joylash</span>
         </Link>
       </div>
 
       <nav className="flex-1 px-3 overflow-y-auto hide-scrollbar" aria-label="Desktop navigation">
         <p className="text-[10px] font-bold text-[var(--color-muted)] uppercase tracking-wider mb-2 px-3">
-          Menu
+          Menyu
         </p>
         <div className="flex flex-col gap-0.5">
           {DESKTOP_NAV_ITEMS.map((item) => {

@@ -13,6 +13,11 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "work/**",
+    // Python backend, virtualenv and collected static assets are not JS sources.
+    "backend/**",
+    "venv/**",
+    "env/**",
+    "**/staticfiles/**",
   ]),
 ]);
 

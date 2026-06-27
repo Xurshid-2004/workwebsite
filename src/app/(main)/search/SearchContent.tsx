@@ -70,8 +70,8 @@ export default function SearchContent() {
   return (
     <div className="page-container lg:max-w-6xl">
       <PageHeader
-        title="Search Jobs"
-        subtitle="Find the perfect role for your skills"
+        title="Ish qidirish"
+        subtitle="Koʻnikmalaringizga mos ishni toping"
         onRefresh={handleRefresh}
       />
 
@@ -79,7 +79,7 @@ export default function SearchContent() {
         <SearchBar
           value={params.query ?? ''}
           onChange={setQuery}
-          placeholder="Search by job title..."
+          placeholder="Ish nomi boʻyicha qidiring..."
         />
       </div>
 
@@ -133,15 +133,15 @@ export default function SearchContent() {
             ) : (
               <EmptyState
                 icon={Search}
-                title="No jobs found"
-                description="Try adjusting your search or filters to find more opportunities."
+                title="Ish topilmadi"
+                description="Qidiruv yoki filtrlarni oʻzgartirib koʻring."
               />
             )
           ) : (
             <MapPreview
               markers={mapMarkers}
               jobCount={jobs.length}
-              title="Filtered jobs"
+              title="Topilgan ishlar"
               className="min-h-[480px] h-[calc(100dvh-16rem)]"
             />
           )}

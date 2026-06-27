@@ -39,6 +39,13 @@ export function buildJobTags(job: Job): string[] {
   return [...new Set(tags)];
 }
 
+/** "Toshkent, Chilonzor" → "Toshkent"; falls back to the explicit city. */
+export function deriveRegion(job: Job): string | undefined {
+  if (job.location.city) return job.location.city;
+  const label = job.location.label ?? '';
+  return label.includes(',') ? label.split(',')[0].trim() : label || undefined;
+}
+
 export function toJobListItem(job: Job, savedJobIds: Set<string>): JobListItem {
   return {
     id: job.id,
@@ -59,6 +66,10 @@ export function toJobListItem(job: Job, savedJobIds: Set<string>): JobListItem {
     posterId: job.posterId,
     salaryMin: job.salaryMin,
     salaryMax: job.salaryMax,
+    lat: job.location.lat,
+    lng: job.location.lng,
+    isRemote: job.location.isRemote,
+    region: deriveRegion(job),
   };
 }
 

@@ -13,3 +13,5 @@ export const USER_PROFILES_STORAGE_KEY = 'jobmarket:user-profiles';
 export const REPORTS_STORAGE_KEY = 'jobmarket:reports';
 export const LOCATIONS_STORAGE_KEY = 'jobmarket:locations';
 export const JOB_MODERATION_STORAGE_KEY = 'jobmarket:job-moderation';
+export const APPLICATIONS_STORAGE_KEY = 'jobmarket:applications';
+export const NOTIFICATIONS_STORAGE_KEY = 'jobmarket:notifications';

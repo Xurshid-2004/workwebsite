@@ -23,12 +23,12 @@ export default function MyJobsPage() {
     <RequireAuth>
     <div className="page-container">
       <PageHeader
-        title="My Job Posts"
+        title="Mening eʼlonlarim"
         onRefresh={refetch}
         subtitle={
           jobs.length > 0
-            ? `You have ${jobs.length} listing${jobs.length === 1 ? '' : 's'}.`
-            : 'Jobs you post will appear here.'
+            ? `${jobs.length} ta eʼlon joylangan.`
+            : 'Siz joylagan ishlar shu yerda koʻrinadi.'
         }
       />
 
@@ -58,11 +58,11 @@ export default function MyJobsPage() {
       ) : (
         <EmptyState
           icon={Briefcase}
-          title="No job posts yet"
-          description="Create your first listing to start receiving applications."
+          title="Hali eʼlon yoʻq"
+          description="Birinchi eʼloningizni joylang va arizalar qabul qilishni boshlang."
           action={
             <Link href="/create">
-              <Button variant="accent">Post a Job</Button>
+              <Button variant="accent">Ish joylash</Button>
             </Link>
           }
         />

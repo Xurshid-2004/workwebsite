@@ -27,10 +27,10 @@ export function LoginForm() {
     setIsSubmitting(true);
     try {
       await login({ email, password });
-      appToast.success('Welcome back!');
+      appToast.success('Xush kelibsiz!');
       router.push('/home');
     } catch (err) {
-      appToast.error(err, 'Login failed');
+      appToast.error(err, 'Kirishda xatolik');
     } finally {
       setIsSubmitting(false);
     }
@@ -51,24 +51,24 @@ export function LoginForm() {
       />
 
       <Input
-        label="Password"
+        label="Parol"
         type="password"
         autoComplete="current-password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         error={errors.password}
         placeholder="••••••••"
-        hint={isMockAuth ? 'Any password works in mock mode' : undefined}
+        hint={isMockAuth ? 'Mock rejimda istalgan parol ishlaydi' : undefined}
       />
 
       <Button type="submit" className="w-full" size="lg" isLoading={isSubmitting}>
-        Sign in
+        Kirish
       </Button>
 
       <p className="text-center text-sm text-[var(--color-muted)]">
-        No account?{' '}
+        Hisobingiz yoʻqmi?{' '}
         <Link href="/register" className="text-[var(--color-primary)] font-semibold hover:underline">
-          Create one
+          Roʻyxatdan oʻting
         </Link>
       </p>
     </form>

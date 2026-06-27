@@ -7,7 +7,10 @@ import { resolveFilterId } from '@/lib/filters/job-filters';
 import { userJobsStore } from '@/services/user-jobs.store';
 import { jobModerationStore } from '@/services/job-moderation.store';
 import { isBackendEnabled } from '@/lib/backend/config';
+import { isRestBackendEnabled } from '@/lib/api/config';
 import { firebaseJobsRepository } from '@/lib/firebase/repositories/jobs.repository';
+import { haversineKm } from '@/lib/map/distance';
+import type { MapCoordinates } from '@/types';
 import {
   matchesSearchParams,
   sortJobs,
@@ -15,6 +18,10 @@ import {
 } from '@/lib/filters/job-search';
 
 async function fetchAllJobs(): Promise<Job[]> {
+  if (isRestBackendEnabled()) {
+    const { restJobsRepository } = await import('@/lib/rest/repositories/jobs.repository');
+    return restJobsRepository.getAll();
+  }
   if (isBackendEnabled()) {
     return firebaseJobsRepository.getAll();
   }
@@ -90,6 +97,10 @@ export const jobsService = {
   },
 
   async getByIdAsync(id: string): Promise<Job | undefined> {
+    if (isRestBackendEnabled()) {
+      const { restJobsRepository } = await import('@/lib/rest/repositories/jobs.repository');
+      return restJobsRepository.getById(id);
+    }
     if (isBackendEnabled()) {
       return firebaseJobsRepository.getById(id);
     }
@@ -98,6 +109,10 @@ export const jobsService = {
 
   async createFromForm(data: CreateJobFormData): Promise<Job> {
     const job = createJobFormToEntity(data);
+    if (isRestBackendEnabled()) {
+      const { restJobsRepository } = await import('@/lib/rest/repositories/jobs.repository');
+      return restJobsRepository.insert(job);
+    }
     if (isBackendEnabled()) {
       return firebaseJobsRepository.insert(job);
     }
@@ -108,11 +123,11 @@ export const jobsService = {
     const active = await fetchActiveJobs();
     const labels = new Set<string>();
     active.forEach((job) => {
-      labels.add(job.location.isRemote ? 'Remote' : job.location.label);
+      labels.add(job.location.isRemote ? 'Masofaviy' : job.location.label);
     });
     return {
       locations: [
-        { value: 'all', label: 'All locations' },
+        { value: 'all', label: 'Barcha joylashuvlar' },
         ...[...labels].sort().map((label) => ({ value: label, label })),
       ],
     };
@@ -160,6 +175,50 @@ export const jobsService = {
       .map((job) => toJobListItem(job, savedJobIds));
   },
 
+  /**
+   * Jobs within `radiusKm` of a point, nearest-first, with `distanceKm` attached.
+   * REST mode delegates to the server's geo endpoint; otherwise distance is
+   * computed client-side over the active pool.
+   */
+  async getNearbyJobs(
+    savedJobIds: Set<string>,
+    center: MapCoordinates,
+    radiusKm = 25
+  ): Promise<JobListItem[]> {
+    if (isRestBackendEnabled()) {
+      const { restJobsRepository } = await import('@/lib/rest/repositories/jobs.repository');
+      const results = await restJobsRepository.getNearby(center, radiusKm);
+      return results.map(({ job, distanceKm }) => {
+        const item = toJobListItem(job, savedJobIds);
+        item.distanceKm = distanceKm;
+        return item;
+      });
+    }
+
+    const active = await fetchActiveJobs();
+    return active
+      .filter(
+        (job) =>
+          !job.location.isRemote &&
+          job.location.lat !== undefined &&
+          job.location.lng !== undefined
+      )
+      .map((job) => ({
+        job,
+        distanceKm: haversineKm(center, {
+          lat: job.location.lat as number,
+          lng: job.location.lng as number,
+        }),
+      }))
+      .filter(({ distanceKm }) => distanceKm <= radiusKm)
+      .sort((a, b) => a.distanceKm - b.distanceKm)
+      .map(({ job, distanceKm }) => {
+        const item = toJobListItem(job, savedJobIds);
+        item.distanceKm = Math.round(distanceKm * 10) / 10;
+        return item;
+      });
+  },
+
   async getSimilarJobs(
     jobId: string,
     savedJobIds: Set<string>,
@@ -198,6 +257,11 @@ export const jobsService = {
   },
 
   async updateJobStatus(id: string, status: JobStatus): Promise<void> {
+    if (isRestBackendEnabled()) {
+      const { restJobsRepository } = await import('@/lib/rest/repositories/jobs.repository');
+      await restJobsRepository.updateStatus(id, status);
+      return;
+    }
     if (isBackendEnabled()) {
       await firebaseJobsRepository.updateStatus(id, status);
       return;
@@ -207,6 +271,11 @@ export const jobsService = {
   },
 
   async deleteJob(id: string): Promise<void> {
+    if (isRestBackendEnabled()) {
+      const { restJobsRepository } = await import('@/lib/rest/repositories/jobs.repository');
+      await restJobsRepository.delete(id);
+      return;
+    }
     if (isBackendEnabled()) {
       await firebaseJobsRepository.delete(id);
       return;

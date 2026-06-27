@@ -1,4 +1,5 @@
 import { getApiBaseUrl } from './config';
+import { apiTokenStore } from './token';
 import type { ApiErrorBody } from './types';
 
 export class ApiError extends Error {
@@ -28,6 +29,11 @@ function buildUrl(path: string): string {
 export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const url = buildUrl(path);
   const headers = new Headers(init?.headers);
+
+  const token = apiTokenStore.get();
+  if (token && !headers.has('Authorization')) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
 
   if (init?.body && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json');

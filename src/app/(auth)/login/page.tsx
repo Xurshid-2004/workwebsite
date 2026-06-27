@@ -4,8 +4,8 @@ import { LoginForm } from '@/components/auth/LoginForm';
 import { createPageMetadata } from '@/lib/seo/metadata';
 
 export const metadata = createPageMetadata({
-  title: 'Sign in',
-  description: 'Sign in to JobMarket to manage your profile, messages, and job listings.',
+  title: 'Kirish',
+  description: "Profilingiz, xabarlar va eʼlonlaringizni boshqarish uchun IshTop'ga kiring.",
   path: '/login',
   noIndex: true,
 });
@@ -13,11 +13,11 @@ export const metadata = createPageMetadata({
 export default function LoginPage() {
   return (
     <AuthShell
-      title="Welcome back"
-      subtitle="Sign in to manage your profile and messages"
+      title="Xush kelibsiz"
+      subtitle="Profilingiz va xabarlaringizni boshqaring"
       footer={
         <Link href="/home" className="text-[var(--color-primary)] font-medium hover:underline">
-          Continue browsing without signing in
+          Kirmasdan davom etish
         </Link>
       }
     >

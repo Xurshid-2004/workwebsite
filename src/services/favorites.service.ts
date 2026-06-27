@@ -1,5 +1,6 @@
 import { favorites as favoritesData, FAVORITES_STORAGE_KEY } from '@/data';
 import { isBackendEnabled } from '@/lib/backend/config';
+import { isRestBackendEnabled } from '@/lib/api/config';
 import { firebaseFavoritesRepository } from '@/lib/firebase/repositories/favorites.repository';
 import { authService } from '@/services/auth.service';
 
@@ -30,6 +31,10 @@ export const favoritesService = {
   },
 
   async getFavoriteJobIdsAsync(): Promise<Set<string>> {
+    if (isRestBackendEnabled()) {
+      const { restFavoritesRepository } = await import('@/lib/rest/repositories/favorites.repository');
+      return restFavoritesRepository.getFavoriteIds(authService.getCurrentUserId());
+    }
     if (isBackendEnabled()) {
       return firebaseFavoritesRepository.getFavoriteIds(authService.getCurrentUserId());
     }
@@ -55,6 +60,10 @@ export const favoritesService = {
   },
 
   async toggleFavoriteAsync(jobId: string): Promise<boolean> {
+    if (isRestBackendEnabled()) {
+      const { restFavoritesRepository } = await import('@/lib/rest/repositories/favorites.repository');
+      return restFavoritesRepository.toggle(authService.getCurrentUserId(), jobId);
+    }
     if (isBackendEnabled()) {
       return firebaseFavoritesRepository.toggle(authService.getCurrentUserId(), jobId);
     }

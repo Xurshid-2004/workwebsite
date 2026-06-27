@@ -2,8 +2,8 @@ import { HomeContent } from './HomeContent';
 import { createPageMetadata } from '@/lib/seo/metadata';
 
 export const metadata = createPageMetadata({
-  title: 'Home',
-  description: 'Browse featured jobs, categories, and recent listings on JobMarket.',
+  title: 'Bosh sahifa',
+  description: "Tavsiya etilgan ishlar, kategoriyalar va so'nggi e'lonlarni IshTop'da ko'ring.",
   path: '/home',
 });
 

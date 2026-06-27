@@ -3,11 +3,12 @@
 import { useEffect, useState } from 'react';
 
 export function useOnlineStatus(): boolean {
-  const [online, setOnline] = useState(
-    () => (typeof window !== 'undefined' ? navigator.onLine : true)
-  );
+  // Start "online" so SSR and the first client render agree; read the real
+  // status after mount to avoid a hydration mismatch when offline at load.
+  const [online, setOnline] = useState(true);
 
   useEffect(() => {
+    setOnline(navigator.onLine);
     const onOnline = () => setOnline(true);
     const onOffline = () => setOnline(false);
 

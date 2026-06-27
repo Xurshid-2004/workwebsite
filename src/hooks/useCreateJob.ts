@@ -25,10 +25,10 @@ function firstErrorMessage(errors: CreateJobFormErrors): string | undefined {
 }
 
 const STEP_LABELS: Record<CreateJobStep, string> = {
-  1: 'Basic info',
-  2: 'Salary & details',
-  3: 'Contact & location',
-  4: 'Preview',
+  1: 'Asosiy maʼlumot',
+  2: 'Maosh va tafsilot',
+  3: 'Aloqa va joylashuv',
+  4: 'Koʻrib chiqish',
 };
 
 export function useCreateJob() {

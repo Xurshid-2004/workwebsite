@@ -16,8 +16,8 @@ export function ProfileContent() {
   return (
     <div className="page-container">
       <PageHeader
-        title="Profile"
-        subtitle={isAuthenticated ? 'Your account details' : 'Browsing as guest demo user'}
+        title="Profil"
+        subtitle={isAuthenticated ? 'Hisob maʼlumotlaringiz' : 'Mehmon sifatida koʻrilmoqda'}
       />
 
       <div className="card p-6 mb-6">
@@ -43,7 +43,7 @@ export function ProfileContent() {
             onClick={() => router.push('/profile/edit')}
           >
             <Pencil className="w-4 h-4" />
-            Edit
+            Tahrirlash
           </Button>
         </div>
       </div>
@@ -59,16 +59,16 @@ export function ProfileContent() {
         <div className="p-4 flex items-center gap-3">
           <Phone className="w-5 h-5 text-[var(--color-primary)] shrink-0" />
           <div>
-            <p className="text-xs text-[var(--color-muted)]">Phone</p>
+            <p className="text-xs text-[var(--color-muted)]">Telefon</p>
             <p className="text-sm font-medium text-[var(--color-secondary)]">
-              {user.phone || 'Not set'}
+              {user.phone || 'Kiritilmagan'}
             </p>
           </div>
         </div>
         <div className="p-4 flex items-center gap-3">
           <Globe className="w-5 h-5 text-[var(--color-primary)] shrink-0" />
           <div>
-            <p className="text-xs text-[var(--color-muted)]">Language</p>
+            <p className="text-xs text-[var(--color-muted)]">Til</p>
             <p className="text-sm font-medium text-[var(--color-secondary)]">
               {LANGUAGE_LABELS[user.language]}
             </p>
@@ -77,7 +77,7 @@ export function ProfileContent() {
         <div className="p-4 flex items-center gap-3">
           <Briefcase className="w-5 h-5 text-[var(--color-primary)] shrink-0" />
           <div>
-            <p className="text-xs text-[var(--color-muted)]">Account type</p>
+            <p className="text-xs text-[var(--color-muted)]">Hisob turi</p>
             <p className="text-sm font-medium text-[var(--color-secondary)]">
               {PROFILE_ROLE_LABELS[user.profileRole]}
             </p>
@@ -88,15 +88,15 @@ export function ProfileContent() {
       {!isAuthenticated && (
         <div className="card p-5 mt-6 text-center">
           <p className="text-sm text-[var(--color-muted)] mb-4">
-            Sign in to save your profile and sync across devices.
+            Profilingizni saqlash uchun tizimga kiring.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/login">
-              <Button className="w-full sm:w-auto">Sign in</Button>
+              <Button className="w-full sm:w-auto">Kirish</Button>
             </Link>
             <Link href="/register">
               <Button variant="outline" className="w-full sm:w-auto">
-                Register
+                Roʻyxatdan oʻtish
               </Button>
             </Link>
           </div>

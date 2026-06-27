@@ -19,12 +19,12 @@ export function ChatListContent() {
   return (
     <div className="page-container">
       <PageHeader
-        title="Messages"
+        title="Xabarlar"
         onRefresh={refresh}
         subtitle={
           totalUnread > 0
-            ? `${totalUnread} unread conversation${totalUnread === 1 ? '' : 's'}`
-            : 'Chat with employers and applicants'
+            ? `${totalUnread} ta oʻqilmagan suhbat`
+            : 'Ish beruvchilar va nomzodlar bilan suhbat'
         }
       />
 

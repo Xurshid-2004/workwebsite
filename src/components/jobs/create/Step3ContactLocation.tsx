@@ -17,16 +17,16 @@ export function Step3ContactLocation({ form, errors, onChange, onChangeFields }:
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-secondary)]">Contact & location</h2>
+        <h2 className="text-lg font-semibold text-[var(--color-secondary)]">Aloqa va joylashuv</h2>
         <p className="text-sm text-[var(--color-muted)] mt-1">
-          How candidates can reach you and where the job is based.
+          Nomzodlar siz bilan qanday bogʻlanadi va ish qayerda joylashgan.
         </p>
       </div>
 
       <Input
-        label="Phone number"
+        label="Telefon raqami"
         type="tel"
-        placeholder="+1 (555) 123-4567"
+        placeholder="+998 90 123 45 67"
         value={form.phone}
         onChange={(e) => onChange('phone', e.target.value)}
         error={errors.phone}
@@ -34,8 +34,8 @@ export function Step3ContactLocation({ form, errors, onChange, onChangeFields }:
       />
 
       <Input
-        label="Address"
-        placeholder={isRemote ? 'Optional for remote roles' : 'Street address'}
+        label="Manzil"
+        placeholder={isRemote ? 'Masofaviy ish uchun ixtiyoriy' : 'Koʻcha, uy'}
         value={form.address}
         onChange={(e) => onChange('address', e.target.value)}
         error={errors.address}
@@ -43,8 +43,8 @@ export function Step3ContactLocation({ form, errors, onChange, onChangeFields }:
       />
 
       <Input
-        label="City / district"
-        placeholder={isRemote ? 'Remote' : 'e.g. Brooklyn, NY'}
+        label="Shahar / tuman"
+        placeholder={isRemote ? 'Masofaviy' : 'masalan, Toshkent, Chilonzor'}
         value={form.cityDistrict}
         onChange={(e) => onChange('cityDistrict', e.target.value)}
         error={errors.cityDistrict}

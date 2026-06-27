@@ -40,7 +40,7 @@ export const LANGUAGE_OPTIONS: { value: AppLanguage; label: string }[] = [
 ];
 
 export const PROFILE_ROLE_OPTIONS: { value: ProfileRole; label: string }[] = [
-  { value: 'seeker', label: 'Job seeker' },
-  { value: 'poster', label: 'Job poster' },
-  { value: 'both', label: 'Both' },
+  { value: 'seeker', label: 'Ish izlovchi' },
+  { value: 'poster', label: 'Ish beruvchi' },
+  { value: 'both', label: 'Ikkalasi' },
 ];

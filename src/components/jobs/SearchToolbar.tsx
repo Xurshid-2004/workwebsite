@@ -29,8 +29,8 @@ export function SearchToolbar({
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
       <p className="text-sm text-[var(--color-muted)]">
-        <span className="font-semibold text-[var(--color-secondary)]">{resultCount}</span> jobs
-        found
+        <span className="font-semibold text-[var(--color-secondary)]">{resultCount}</span> ta ish
+        topildi
       </p>
 
       <div className="flex items-center gap-2 flex-wrap">
@@ -41,7 +41,7 @@ export function SearchToolbar({
             className="lg:hidden flex items-center gap-2 px-3 py-2 rounded-xl border border-[var(--color-border)] bg-white text-sm font-medium text-[var(--color-secondary)] hover:border-[var(--color-primary)]/40 transition-colors"
           >
             <SlidersHorizontal className="w-4 h-4" />
-            Filters
+            Filtrlar
             {activeFilterCount > 0 && (
               <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-[var(--color-primary)] text-white text-xs font-bold flex items-center justify-center">
                 {activeFilterCount}
@@ -72,7 +72,7 @@ export function SearchToolbar({
             aria-label="List view"
           >
             <List className="w-4 h-4" />
-            <span className="hidden sm:inline">List</span>
+            <span className="hidden sm:inline">Roʻyxat</span>
           </button>
           <button
             type="button"
@@ -86,7 +86,7 @@ export function SearchToolbar({
             aria-label="Map view"
           >
             <Map className="w-4 h-4" />
-            <span className="hidden sm:inline">Map</span>
+            <span className="hidden sm:inline">Xarita</span>
           </button>
         </div>
       </div>

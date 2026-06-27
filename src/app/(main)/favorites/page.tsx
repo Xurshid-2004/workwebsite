@@ -21,12 +21,12 @@ export default function FavoritesPage() {
     <RequireAuth>
     <div className="page-container">
       <PageHeader
-        title="Saved Jobs"
+        title="Saqlangan ishlar"
         onRefresh={refresh}
         subtitle={
           savedJobs.length > 0
-            ? `You have ${savedJobs.length} job${savedJobs.length === 1 ? '' : 's'} saved for later.`
-            : 'Jobs you bookmark will appear here.'
+            ? `${savedJobs.length} ta ish saqlangan.`
+            : 'Belgilangan ishlar shu yerda koʻrinadi.'
         }
       />
 
@@ -43,11 +43,11 @@ export default function FavoritesPage() {
       ) : (
         <EmptyState
           icon={Bookmark}
-          title="No saved jobs yet"
-          description="Tap the bookmark icon on any job to save it here for quick access."
+          title="Hali saqlangan ish yoʻq"
+          description="Istalgan ishdagi belgi tugmasini bosib, uni shu yerga saqlang."
           action={
             <Link href="/search">
-              <Button>Browse jobs</Button>
+              <Button>Ishlarni koʻrish</Button>
             </Link>
           }
         />

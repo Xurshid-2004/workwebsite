@@ -30,19 +30,19 @@ export function Step4Preview({ form, errors }: Step4PreviewProps) {
   const category = categories.find((c) => c.id === form.categoryId);
 
   const checklist = [
-    { label: 'Job title', ok: Boolean(form.title.trim()) },
-    { label: 'Category', ok: Boolean(form.categoryId) },
-    { label: 'Work type & schedule', ok: Boolean(form.workType && form.scheduleType) },
-    { label: 'Salary range', ok: Boolean(form.salaryMin && form.salaryMax) },
-    { label: 'Description', ok: form.description.trim().length >= 20 },
+    { label: 'Lavozim nomi', ok: Boolean(form.title.trim()) },
+    { label: 'Kategoriya', ok: Boolean(form.categoryId) },
+    { label: 'Ish turi va jadval', ok: Boolean(form.workType && form.scheduleType) },
+    { label: 'Maosh', ok: Boolean(form.salaryMin && form.salaryMax) },
+    { label: 'Tavsif', ok: form.description.trim().length >= 20 },
     {
-      label: 'Responsibilities',
+      label: 'Majburiyatlar',
       ok: parseLines(form.responsibilities).length > 0,
     },
-    { label: 'Requirements', ok: parseLines(form.requirements).length > 0 },
-    { label: 'Contact phone', ok: Boolean(form.phone.trim()) },
+    { label: 'Talablar', ok: parseLines(form.requirements).length > 0 },
+    { label: 'Telefon', ok: Boolean(form.phone.trim()) },
     {
-      label: 'Location',
+      label: 'Joylashuv',
       ok: form.workType === 'remote' ? Boolean(form.cityDistrict.trim()) : Boolean(form.address.trim() && form.cityDistrict.trim()),
     },
   ];
@@ -50,42 +50,42 @@ export function Step4Preview({ form, errors }: Step4PreviewProps) {
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-secondary)]">Preview & publish</h2>
+        <h2 className="text-lg font-semibold text-[var(--color-secondary)]">Koʻrib chiqish va eʼlon</h2>
         <p className="text-sm text-[var(--color-muted)] mt-1">
-          Review how your listing will appear before posting.
+          Eʼlon qanday koʻrinishini joylashdan oldin koʻrib chiqing.
         </p>
       </div>
 
       <JobPreviewCard job={previewJob} />
 
       <div className="card p-4 sm:p-5 space-y-4">
-        <h3 className="font-semibold text-[var(--color-secondary)] text-sm">Listing summary</h3>
+        <h3 className="font-semibold text-[var(--color-secondary)] text-sm">Eʼlon xulosasi</h3>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
           <div>
-            <dt className="text-[var(--color-muted)]">Category</dt>
+            <dt className="text-[var(--color-muted)]">Kategoriya</dt>
             <dd className="font-medium text-[var(--color-secondary)]">{category?.name ?? '—'}</dd>
           </div>
           <div>
-            <dt className="text-[var(--color-muted)]">Work type</dt>
+            <dt className="text-[var(--color-muted)]">Ish turi</dt>
             <dd className="font-medium text-[var(--color-secondary)]">
               {form.workType ? WORK_TYPE_LABELS[form.workType] : '—'}
             </dd>
           </div>
           <div>
-            <dt className="text-[var(--color-muted)]">Schedule</dt>
+            <dt className="text-[var(--color-muted)]">Jadval</dt>
             <dd className="font-medium text-[var(--color-secondary)]">
               {form.scheduleType ? SCHEDULE_TYPE_LABELS[form.scheduleType] : '—'}
             </dd>
           </div>
           <div>
-            <dt className="text-[var(--color-muted)]">Phone</dt>
+            <dt className="text-[var(--color-muted)]">Telefon</dt>
             <dd className="font-medium text-[var(--color-secondary)]">{form.phone || '—'}</dd>
           </div>
         </dl>
 
         {form.description && (
           <div>
-            <p className="text-[var(--color-muted)] text-sm mb-1">Description</p>
+            <p className="text-[var(--color-muted)] text-sm mb-1">Tavsif</p>
             <p className="text-sm text-[var(--color-secondary)] whitespace-pre-wrap line-clamp-4">
               {form.description}
             </p>
@@ -109,12 +109,12 @@ export function Step4Preview({ form, errors }: Step4PreviewProps) {
           )}
           <div>
             <p className="font-semibold text-sm text-[var(--color-secondary)]">
-              {isValid ? 'Ready to publish' : 'Fix these items before posting'}
+              {isValid ? 'Eʼlonga tayyor' : 'Joylashdan oldin shularni tuzating'}
             </p>
             <p className="text-xs text-[var(--color-muted)] mt-0.5">
               {isValid
-                ? 'All required fields are complete.'
-                : 'Some fields need attention.'}
+                ? 'Barcha majburiy maydonlar toʻldirilgan.'
+                : 'Baʼzi maydonlarga eʼtibor bering.'}
             </p>
           </div>
         </div>
@@ -136,7 +136,7 @@ export function Step4Preview({ form, errors }: Step4PreviewProps) {
 
         {!isValid && Object.keys(errors).length > 0 && (
           <p className="mt-3 text-xs text-amber-800" role="alert">
-            Go back to earlier steps to fix highlighted fields.
+            Belgilangan maydonlarni tuzatish uchun avvalgi qadamlarga qayting.
           </p>
         )}
       </div>

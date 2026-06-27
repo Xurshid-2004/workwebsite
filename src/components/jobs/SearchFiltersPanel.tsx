@@ -83,7 +83,7 @@ export function SearchFiltersPanel({
   compact = false,
 }: SearchFiltersPanelProps) {
   const categoryOptions = [
-    { value: 'all', label: 'All categories' },
+    { value: 'all', label: 'Barcha kategoriyalar' },
     ...categories.map((c) => ({ value: c.id, label: c.name })),
   ];
 
@@ -98,33 +98,33 @@ export function SearchFiltersPanel({
     <div className={cn('space-y-5', className)}>
       <div className="flex items-center justify-between">
         <h3 className={cn('font-bold text-[var(--color-secondary)]', compact ? 'text-base' : 'text-sm')}>
-          Filters
+          Filtrlar
         </h3>
         <button
           type="button"
           onClick={onClear}
           className="text-xs font-semibold text-[var(--color-primary)] hover:underline"
         >
-          Clear all
+          Tozalash
         </button>
       </div>
 
       <Select
-        label="Category"
+        label="Kategoriya"
         options={categoryOptions}
         value={params.categoryId ?? 'all'}
         onChange={(e) => onCategoryChange(e.target.value)}
       />
 
       <Select
-        label="Location"
+        label="Joylashuv"
         options={locationOptions}
         value={params.location ?? 'all'}
         onChange={(e) => onLocationChange(e.target.value)}
       />
 
       <Select
-        label="Salary range"
+        label="Maosh (oylik)"
         options={SALARY_RANGE_OPTIONS.map((r) => ({ value: r.id, label: r.label }))}
         value={activeSalaryId}
         onChange={(e) => {
@@ -138,14 +138,14 @@ export function SearchFiltersPanel({
       />
 
       <ChipGroup
-        label="Work type"
+        label="Ish turi"
         options={WORK_TYPE_FILTER_OPTIONS}
         selected={params.workTypes ?? []}
         onToggle={onWorkTypeToggle}
       />
 
       <ChipGroup
-        label="Schedule"
+        label="Jadval"
         options={SCHEDULE_FILTER_OPTIONS}
         selected={params.schedules ?? []}
         onToggle={onScheduleToggle}

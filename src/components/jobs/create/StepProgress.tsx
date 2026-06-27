@@ -5,10 +5,10 @@ import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
 
 const STEPS: { id: CreateJobStep; label: string }[] = [
-  { id: 1, label: 'Basics' },
-  { id: 2, label: 'Details' },
-  { id: 3, label: 'Location' },
-  { id: 4, label: 'Publish' },
+  { id: 1, label: 'Asosiy' },
+  { id: 2, label: 'Tafsilot' },
+  { id: 3, label: 'Joylashuv' },
+  { id: 4, label: 'Eʼlon' },
 ];
 
 interface StepProgressProps {

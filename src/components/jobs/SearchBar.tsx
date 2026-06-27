@@ -18,7 +18,7 @@ export interface SearchBarProps {
 export function SearchBar({
   value,
   onChange,
-  placeholder = 'Search jobs, companies...',
+  placeholder = 'Ish, kompaniya yoki koʻnikma qidiring...',
   asLink = false,
   href = '/search',
   onFilterClick,

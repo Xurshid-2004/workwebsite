@@ -12,7 +12,7 @@ export default function CategoriesPage() {
 
   return (
     <div className="page-container">
-      <PageHeader title="Categories" subtitle="Explore jobs by your preferred industry." />
+      <PageHeader title="Kategoriyalar" subtitle="Sohangiz boʻyicha ishlarni koʻring." />
 
       <QueryErrorBanner message={error} onRetry={refetch} className="mb-4" />
 

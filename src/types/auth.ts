@@ -1,4 +1,4 @@
-export type AuthProviderId = 'mock' | 'firebase';
+export type AuthProviderId = 'mock' | 'firebase' | 'rest';
 
 export interface AuthSession {
   userId: string;

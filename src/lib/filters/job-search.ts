@@ -15,32 +15,33 @@ export const DEFAULT_SEARCH_PARAMS: JobSearchParams = {
 };
 
 export const WORK_TYPE_FILTER_OPTIONS: { id: WorkTypeFilter; label: string }[] = [
-  { id: 'full-time', label: 'Full-time' },
-  { id: 'part-time', label: 'Part-time' },
-  { id: 'temporary', label: 'Temporary' },
-  { id: 'remote', label: 'Remote' },
-  { id: 'flexible', label: 'Flexible' },
+  { id: 'full-time', label: 'Toʻliq stavka' },
+  { id: 'part-time', label: 'Yarim stavka' },
+  { id: 'temporary', label: 'Vaqtinchalik' },
+  { id: 'remote', label: 'Masofaviy' },
+  { id: 'flexible', label: 'Moslashuvchan' },
 ];
 
 export const SCHEDULE_FILTER_OPTIONS: { id: ScheduleFilter; label: string }[] = [
-  { id: 'standard', label: 'Standard (9–5)' },
-  { id: 'flexible-hours', label: 'Flexible hours' },
-  { id: 'weekends', label: 'Weekends' },
-  { id: 'night-shift', label: 'Night shift' },
+  { id: 'standard', label: 'Standart (9–18)' },
+  { id: 'flexible-hours', label: 'Moslashuvchan' },
+  { id: 'weekends', label: 'Dam olish kunlari' },
+  { id: 'night-shift', label: 'Tungi smena' },
 ];
 
 export const SORT_OPTIONS: { id: JobSortOption; label: string }[] = [
-  { id: 'newest', label: 'Newest first' },
-  { id: 'salary-desc', label: 'Highest salary' },
-  { id: 'salary-asc', label: 'Lowest salary' },
+  { id: 'newest', label: 'Eng yangi' },
+  { id: 'salary-desc', label: 'Yuqori maosh' },
+  { id: 'salary-asc', label: 'Past maosh' },
 ];
 
+// Monthly USD ranges (matches the Uzbekistan-market dataset).
 export const SALARY_RANGE_OPTIONS: SalaryRangeOption[] = [
-  { id: 'any', label: 'Any salary', min: 0, max: Infinity },
-  { id: 'under-80', label: 'Under $80k', min: 0, max: 80000 },
-  { id: '80-120', label: '$80k – $120k', min: 80000, max: 120000 },
-  { id: '120-160', label: '$120k – $160k', min: 120000, max: 160000 },
-  { id: '160-plus', label: '$160k+', min: 160000, max: Infinity },
+  { id: 'any', label: 'Istalgan maosh', min: 0, max: Infinity },
+  { id: 'under-500', label: '$500 gacha', min: 0, max: 500 },
+  { id: '500-1000', label: '$500 – $1000', min: 500, max: 1000 },
+  { id: '1000-2000', label: '$1000 – $2000', min: 1000, max: 2000 },
+  { id: '2000-plus', label: '$2000+', min: 2000, max: Infinity },
 ];
 
 export function matchesWorkTypeFilter(job: Job, filter: WorkTypeFilter): boolean {
@@ -68,10 +69,8 @@ export function isAnnualSalary(job: Job): boolean {
   return job.salaryMin >= 1000;
 }
 
+/** Comparable value for filtering/sorting — monthly salaryMax in the dataset. */
 export function getComparableSalary(job: Job): number {
-  if (!isAnnualSalary(job)) {
-    return job.salaryMax * 40 * 52;
-  }
   return job.salaryMax;
 }
 

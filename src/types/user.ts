@@ -19,15 +19,15 @@ export const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
 };
 
 export const PROFILE_ROLE_LABELS: Record<ProfileRole, string> = {
-  seeker: 'Job seeker',
-  poster: 'Job poster',
-  both: 'Both',
+  seeker: 'Ish izlovchi',
+  poster: 'Ish beruvchi',
+  both: 'Ikkalasi',
 };
 
 export const LANGUAGE_LABELS: Record<AppLanguage, string> = {
-  en: 'English',
-  uz: 'Uzbek',
-  ru: 'Russian',
+  en: 'Inglizcha',
+  uz: 'Oʻzbekcha',
+  ru: 'Ruscha',
 };
 
 export interface User {

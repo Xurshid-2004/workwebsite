@@ -41,7 +41,7 @@ export function hasAuthErrors(errors: AuthFormErrors): boolean {
 }
 
 export const PROFILE_ROLE_OPTIONS: { value: ProfileRole; label: string; description: string }[] = [
-  { value: 'seeker', label: 'Job seeker', description: 'Browse and apply to jobs' },
-  { value: 'poster', label: 'Job poster', description: 'Post listings and hire talent' },
-  { value: 'both', label: 'Both', description: 'Search jobs and post openings' },
+  { value: 'seeker', label: 'Ish izlovchi', description: 'Ishlarni koʻrish va ariza yuborish' },
+  { value: 'poster', label: 'Ish beruvchi', description: 'Eʼlon joylash va xodim yollash' },
+  { value: 'both', label: 'Ikkalasi', description: 'Ish izlash va eʼlon joylash' },
 ];

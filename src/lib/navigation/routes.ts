@@ -7,6 +7,8 @@ import {
   Settings,
   Search,
   Map,
+  FileText,
+  Users,
 } from 'lucide-react';
 
 /** Single source of truth for app paths — avoids typos and eases Django deep-link parity later. */
@@ -15,6 +17,8 @@ export const ROUTES = {
   search: '/search',
   map: '/map',
   favorites: '/favorites',
+  applications: '/applications',
+  applicants: '/applicants',
   create: '/create',
   chat: '/chat',
   settings: '/settings',
@@ -34,20 +38,22 @@ export interface NavItemConfig {
 }
 
 export const MOBILE_NAV_ITEMS: NavItemConfig[] = [
-  { href: ROUTES.home, icon: Home, label: 'Home' },
-  { href: ROUTES.favorites, icon: Bookmark, label: 'Favorites' },
-  { href: ROUTES.create, icon: Plus, label: 'Create', isCenter: true },
-  { href: ROUTES.chat, icon: MessageCircle, label: 'Chat' },
-  { href: ROUTES.settings, icon: Settings, label: 'Settings' },
+  { href: ROUTES.home, icon: Home, label: 'Asosiy' },
+  { href: ROUTES.map, icon: Map, label: 'Xarita' },
+  { href: ROUTES.create, icon: Plus, label: 'Joylash', isCenter: true },
+  { href: ROUTES.chat, icon: MessageCircle, label: 'Suhbat' },
+  { href: ROUTES.settings, icon: Settings, label: 'Sozlama' },
 ];
 
 export const DESKTOP_NAV_ITEMS: NavItemConfig[] = [
-  { href: ROUTES.home, icon: Home, label: 'Home' },
-  { href: ROUTES.search, icon: Search, label: 'Search' },
-  { href: ROUTES.map, icon: Map, label: 'Map View' },
-  { href: ROUTES.favorites, icon: Bookmark, label: 'Favorites' },
-  { href: ROUTES.chat, icon: MessageCircle, label: 'Messages' },
-  { href: ROUTES.settings, icon: Settings, label: 'Settings' },
+  { href: ROUTES.home, icon: Home, label: 'Bosh sahifa' },
+  { href: ROUTES.search, icon: Search, label: 'Qidiruv' },
+  { href: ROUTES.map, icon: Map, label: 'Xarita' },
+  { href: ROUTES.favorites, icon: Bookmark, label: 'Saqlangan' },
+  { href: ROUTES.applications, icon: FileText, label: 'Arizalarim' },
+  { href: ROUTES.applicants, icon: Users, label: 'Nomzodlar' },
+  { href: ROUTES.chat, icon: MessageCircle, label: 'Xabarlar' },
+  { href: ROUTES.settings, icon: Settings, label: 'Sozlamalar' },
 ];
 
 /**

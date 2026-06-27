@@ -37,6 +37,9 @@ export type {
 } from './auth';
 export type { Category } from './category';
 export type { Favorite } from './favorite';
+export type { Application, ApplicationStatus } from './application';
+export { APPLICATION_STATUS_LABELS } from './application';
+export type { AppNotification, NotificationKind } from './notification';
 export type { Chat, Message, ChatPreview, ChatHeaderInfo, ChatThreadView, SendMessageInput, CreateChatInput } from './chat';
 export type {
   MapProviderId,

@@ -17,11 +17,11 @@ export function ChatEmptyState({ variant = 'list' }: ChatEmptyStateProps) {
   return (
     <EmptyState
       icon={MessageCircle}
-      title="No messages yet"
-      description="Start a conversation by contacting an employer from a job listing."
+      title="Hali xabar yoʻq"
+      description="Ish eʼlonidagi “Bogʻlanish” tugmasi orqali ish beruvchi bilan suhbatni boshlang."
       action={
         <Link href="/search">
-          <Button>Browse jobs</Button>
+          <Button>Ishlarni koʻrish</Button>
         </Link>
       }
     />

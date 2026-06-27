@@ -52,4 +52,12 @@ export interface JobListItem {
   posterId: string;
   salaryMin: number;
   salaryMax: number;
+  /** Geo data for the card mini-map and map views */
+  lat?: number;
+  lng?: number;
+  isRemote: boolean;
+  /** Region / city for the "which area" label (e.g. "Toshkent") */
+  region?: string;
+  /** Distance in km from the user — present only in nearby/geo results */
+  distanceKm?: number;
 }

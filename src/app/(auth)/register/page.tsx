@@ -4,8 +4,8 @@ import { RegisterForm } from '@/components/auth/RegisterForm';
 import { createPageMetadata } from '@/lib/seo/metadata';
 
 export const metadata = createPageMetadata({
-  title: 'Create account',
-  description: 'Register on JobMarket as a job seeker, poster, or both.',
+  title: 'Roʻyxatdan oʻtish',
+  description: "IshTop'da ish izlovchi yoki ish beruvchi sifatida roʻyxatdan oʻting.",
   path: '/register',
   noIndex: true,
 });
@@ -13,11 +13,11 @@ export const metadata = createPageMetadata({
 export default function RegisterPage() {
   return (
     <AuthShell
-      title="Create account"
-      subtitle="Join JobMarket as a seeker, poster, or both"
+      title="Hisob yaratish"
+      subtitle="Ish izlovchi yoki ish beruvchi sifatida qoʻshiling"
       footer={
         <Link href="/home" className="text-[var(--color-primary)] font-medium hover:underline">
-          Continue browsing without an account
+          Hisobsiz davom etish
         </Link>
       }
     >

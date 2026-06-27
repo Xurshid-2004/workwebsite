@@ -12,15 +12,14 @@ interface Step2SalaryDescriptionProps {
 }
 
 export function Step2SalaryDescription({ form, errors, onChange }: Step2SalaryDescriptionProps) {
-  const isHourly = form.scheduleType === 'freelance' || form.scheduleType === 'part-time';
-  const salaryLabel = isHourly ? 'Hourly rate (USD)' : 'Annual salary (USD)';
+  const salaryLabel = 'Oylik maosh (USD)';
 
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-secondary)]">Salary & description</h2>
+        <h2 className="text-lg font-semibold text-[var(--color-secondary)]">Maosh va tavsif</h2>
         <p className="text-sm text-[var(--color-muted)] mt-1">
-          Set compensation and describe the role clearly.
+          Maoshni belgilang va lavozimni aniq tavsiflang.
         </p>
       </div>
 
@@ -31,19 +30,19 @@ export function Step2SalaryDescription({ form, errors, onChange }: Step2SalaryDe
         </p>
         <div className="grid grid-cols-2 gap-3">
           <Input
-            label="From"
+            label="Dan"
             type="number"
             min={0}
-            placeholder={isHourly ? '25' : '60000'}
+            placeholder="500"
             value={form.salaryMin}
             onChange={(e) => onChange('salaryMin', e.target.value)}
             error={errors.salaryMin}
           />
           <Input
-            label="To"
+            label="Gacha"
             type="number"
             min={0}
-            placeholder={isHourly ? '45' : '90000'}
+            placeholder="1500"
             value={form.salaryMax}
             onChange={(e) => onChange('salaryMax', e.target.value)}
             error={errors.salaryMax}
@@ -52,32 +51,32 @@ export function Step2SalaryDescription({ form, errors, onChange }: Step2SalaryDe
       </div>
 
       <Textarea
-        label="Description"
+        label="Tavsif"
         rows={4}
-        placeholder="Describe the role, team, and what success looks like..."
+        placeholder="Lavozim, jamoa va kutilayotgan natijalarni yozing..."
         value={form.description}
         onChange={(e) => onChange('description', e.target.value)}
         error={errors.description}
-        hint={`${form.description.trim().length} characters · minimum 20`}
+        hint={`${form.description.trim().length} ta belgi · kamida 20`}
       />
       <Textarea
-        label="Responsibilities"
+        label="Majburiyatlar"
         rows={4}
-        placeholder={'One responsibility per line\ne.g. Lead design reviews\nCollaborate with engineering'}
+        placeholder={'Har bir qatorga bitta band\nmasalan, Dizayn ko‘riklarini boshqarish\nMuhandislar bilan hamkorlik'}
         value={form.responsibilities}
         onChange={(e) => onChange('responsibilities', e.target.value)}
         error={errors.responsibilities}
-        hint="Enter one item per line"
+        hint="Har bir qatorga bitta band"
       />
 
       <Textarea
-        label="Requirements"
+        label="Talablar"
         rows={4}
-        placeholder={'One requirement per line\ne.g. 3+ years UX experience\nPortfolio required'}
+        placeholder={'Har bir qatorga bitta talab\nmasalan, 3+ yil UX tajriba\nPortfolio talab qilinadi'}
         value={form.requirements}
         onChange={(e) => onChange('requirements', e.target.value)}
         error={errors.requirements}
-        hint="Enter one item per line"
+        hint="Har bir qatorga bitta band"
       />
     </div>
   );

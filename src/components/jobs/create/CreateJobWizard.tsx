@@ -41,10 +41,10 @@ export function CreateJobWizard() {
           <div className="flex items-center justify-between gap-3 mb-4">
             <div className="min-w-0">
               <h1 className="text-lg sm:text-xl font-bold text-[var(--color-secondary)] truncate">
-                Post a Job
+                Ish joylash
               </h1>
               <p className="text-xs text-[var(--color-muted)]">
-                Step {stepMeta.current} of {stepMeta.total} · {stepMeta.label}
+                {stepMeta.current}-qadam / {stepMeta.total} · {stepMeta.label}
               </p>
             </div>
             <button
@@ -98,7 +98,7 @@ export function CreateJobWizard() {
         <div className="max-w-lg mx-auto flex gap-3">
           {!stepMeta.isFirst ? (
             <Button variant="outline" className="flex-1" onClick={goBack} disabled={isSubmitting}>
-              Back
+              Orqaga
             </Button>
           ) : (
             <Button
@@ -107,7 +107,7 @@ export function CreateJobWizard() {
               onClick={() => router.back()}
               disabled={isSubmitting}
             >
-              Cancel
+              Bekor qilish
             </Button>
           )}
 
@@ -118,11 +118,11 @@ export function CreateJobWizard() {
               onClick={submit}
               isLoading={isSubmitting}
             >
-              Post Job
+              Eʼlonni joylash
             </Button>
           ) : (
             <Button variant="accent" className="flex-[2]" onClick={goNext}>
-              Continue
+              Davom etish
             </Button>
           )}
         </div>

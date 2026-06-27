@@ -13,7 +13,7 @@ interface MessageInputProps {
 export function MessageInput({
   onSend,
   disabled,
-  placeholder = 'Type a message...',
+  placeholder = 'Xabar yozing...',
 }: MessageInputProps) {
   const [message, setMessage] = useState('');
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
   ChevronLeft,
@@ -9,14 +9,18 @@ import {
   DollarSign,
   Clock,
   MessageCircle,
+  Check,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { JobCard } from '@/components/jobs/JobCard';
+import { ApplyModal } from '@/components/jobs/ApplyModal';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { JobDetailSkeleton } from '@/components/ui/LoadingState';
 import { useJob } from '@/hooks/useJob';
 import { useFavorites } from '@/context/FavoritesContext';
+import { useApplications } from '@/context/ApplicationsContext';
+import { useNotifications } from '@/context/NotificationsContext';
 import { useChats } from '@/context/ChatsContext';
 import { appToast } from '@/lib/feedback/toast';
 import { cn } from '@/lib/utils';
@@ -34,8 +38,11 @@ export default function JobDetailPage() {
   const id = params.id as string;
   const { job, similarJobs, rawJob, isLoading, error, refetch } = useJob(id);
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { isApplied, apply } = useApplications();
+  const { refresh: refreshNotifications } = useNotifications();
   const { getOrCreateChatForJob } = useChats();
   const { isAuthenticated } = useAuth();
+  const [showApply, setShowApply] = useState(false);
 
   if (isLoading) {
     return <JobDetailSkeleton />;
@@ -46,17 +53,17 @@ export default function JobDetailPage() {
       <div className="page-container min-h-screen flex items-center justify-center">
         <EmptyState
           icon={AlertCircle}
-          title={error ? 'Failed to load job' : 'Job not found'}
+          title={error ? 'Yuklab boʻlmadi' : 'Ish topilmadi'}
           description={
             error
               ? formatUserError(error)
-              : 'This listing may have been removed or is no longer available.'
+              : "Bu e'lon oʻchirilgan yoki mavjud emas."
           }
           action={
             error ? (
-              <Button onClick={() => refetch()}>Try again</Button>
+              <Button onClick={() => refetch()}>Qayta urinish</Button>
             ) : (
-              <Button onClick={() => router.push('/search')}>Back to search</Button>
+              <Button onClick={() => router.push('/search')}>Qidiruvga qaytish</Button>
             )
           }
         />
@@ -65,6 +72,28 @@ export default function JobDetailPage() {
   }
 
   const isSaved = isFavorite(job.id);
+  const currentUserId = authService.getOptionalUserId();
+  const isOwnJob = currentUserId !== null && rawJob.posterId === currentUserId;
+  const alreadyApplied = isApplied(job.id);
+
+  const openApply = () => {
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+    setShowApply(true);
+  };
+
+  const submitApply = async (coverNote: string) => {
+    try {
+      await apply(job.id, coverNote || undefined);
+      refreshNotifications();
+      appToast.success('Arizangiz yuborildi! ✅');
+      setShowApply(false);
+    } catch (err) {
+      appToast.error(err, 'Ariza yuborishda xatolik');
+    }
+  };
 
   const handleSave = async () => {
     if (!isAuthenticated) {
@@ -84,7 +113,7 @@ export default function JobDetailPage() {
     const userId = authService.getCurrentUserId();
     if (rawJob.posterId === userId) {
       router.push('/chat');
-      appToast.info('Open messages from applicants on your listings.');
+      appToast.info("E'loningizga kelgan xabarlarni suhbatlar boʻlimida koʻring.");
       return;
     }
 
@@ -92,7 +121,7 @@ export default function JobDetailPage() {
     if (chat) {
       router.push(`/chat/${chat.id}`);
     } else {
-      appToast.error(null, 'Unable to start conversation.');
+      appToast.error(null, 'Suhbatni boshlab boʻlmadi.');
     }
   };
 
@@ -149,7 +178,7 @@ export default function JobDetailPage() {
               <div className="w-9 h-9 rounded-xl bg-[var(--color-primary-light)] text-[var(--color-primary)] flex items-center justify-center mb-1.5">
                 <MapPin className="w-4 h-4" />
               </div>
-              <span className="text-[10px] font-semibold text-[var(--color-muted)] uppercase">Location</span>
+              <span className="text-[10px] font-semibold text-[var(--color-muted)] uppercase">Joylashuv</span>
               <span className="text-xs font-medium text-[var(--color-secondary)] mt-0.5 text-center">
                 {job.location}
               </span>
@@ -158,7 +187,7 @@ export default function JobDetailPage() {
               <div className="w-9 h-9 rounded-xl bg-[var(--color-success-light)] text-[var(--color-success)] flex items-center justify-center mb-1.5">
                 <DollarSign className="w-4 h-4" />
               </div>
-              <span className="text-[10px] font-semibold text-[var(--color-muted)] uppercase">Salary</span>
+              <span className="text-[10px] font-semibold text-[var(--color-muted)] uppercase">Maosh</span>
               <span className="text-xs font-medium text-[var(--color-success)] mt-0.5 text-center">
                 {job.salary}
               </span>
@@ -167,7 +196,7 @@ export default function JobDetailPage() {
               <div className="w-9 h-9 rounded-xl bg-[var(--color-accent-light)] text-[var(--color-accent)] flex items-center justify-center mb-1.5">
                 <Clock className="w-4 h-4" />
               </div>
-              <span className="text-[10px] font-semibold text-[var(--color-muted)] uppercase">Posted</span>
+              <span className="text-[10px] font-semibold text-[var(--color-muted)] uppercase">Eʼlon</span>
               <span className="text-xs font-medium text-[var(--color-secondary)] mt-0.5 text-center">
                 {job.postedAt}
               </span>
@@ -184,7 +213,7 @@ export default function JobDetailPage() {
         />
 
         <div className="card p-5 sm:p-6">
-          <h2 className="text-base font-bold text-[var(--color-secondary)] mb-3">Job Description</h2>
+          <h2 className="text-base font-bold text-[var(--color-secondary)] mb-3">Ish tavsifi</h2>
           <div className="text-[var(--color-muted)] leading-relaxed space-y-3 text-sm">
             <p>{job.description}</p>
             {rawJob.requirements.length > 0 && (
@@ -199,7 +228,7 @@ export default function JobDetailPage() {
 
         {similarJobs.length > 0 && (
           <section>
-            <SectionHeader title="Similar Jobs" />
+            <SectionHeader title="Oʻxshash ishlar" />
             <div className="flex flex-col gap-3">
               {similarJobs.map((similar, index) => (
                 <JobCard key={similar.id} job={similar} index={index} />
@@ -213,13 +242,32 @@ export default function JobDetailPage() {
         <div className="max-w-2xl mx-auto flex gap-3">
           <Button variant="outline" size="lg" className="gap-2 shrink-0" onClick={handleContact}>
             <MessageCircle className="w-5 h-5" />
-            <span className="hidden sm:inline">Contact</span>
+            <span className="hidden sm:inline">Bogʻlanish</span>
           </Button>
-          <Button size="lg" className="flex-1">
-            Apply Now
-          </Button>
+          {isOwnJob ? (
+            <Button size="lg" variant="outline" className="flex-1" disabled>
+              Bu sizning eʼloningiz
+            </Button>
+          ) : alreadyApplied ? (
+            <Button size="lg" className="flex-1 gap-2" disabled>
+              <Check className="w-5 h-5" />
+              Ariza yuborilgan
+            </Button>
+          ) : (
+            <Button size="lg" className="flex-1" onClick={openApply}>
+              Ariza yuborish
+            </Button>
+          )}
         </div>
       </div>
+
+      <ApplyModal
+        open={showApply}
+        jobTitle={job.title}
+        company={job.company}
+        onClose={() => setShowApply(false)}
+        onSubmit={submitApply}
+      />
     </div>
   );
 }

@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="uz"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[var(--color-background)]">
@@ -37,7 +37,7 @@ export default function RootLayout({
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-xl focus:bg-[var(--color-primary)] focus:text-white"
         >
-          Skip to main content
+          Asosiy kontentga oʻtish
         </a>
         <AppProviders>
           <div id="main-content" className="flex-1 flex flex-col">

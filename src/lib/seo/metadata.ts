@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 
 import { getSiteUrl } from '@/lib/site-url';
 
-const SITE_NAME = 'JobMarket';
+const SITE_NAME = 'IshTop';
 const SITE_DESCRIPTION =
-  'Discover job opportunities, post listings, chat with employers, and manage your career on JobMarket.';
+  "IshTop — O'zbekistondagi ishlarni xaritadan toping, e'lon joylang va ish beruvchilar bilan bevosita bog'laning.";
 
 export const siteConfig = {
   name: SITE_NAME,
@@ -41,7 +41,7 @@ export function createPageMetadata({
       url,
       siteName: SITE_NAME,
       type: 'website',
-      locale: 'en_US',
+      locale: 'uz_UZ',
     },
     twitter: {
       card: 'summary_large_image',

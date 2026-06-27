@@ -32,7 +32,7 @@ export function ChatHeader({ header }: ChatHeaderProps) {
                 {header.otherUserName}
               </h2>
               <p className="text-xs text-[var(--color-muted)] truncate">
-                {header.otherUserTitle ?? 'Job conversation'}
+                {header.otherUserTitle ?? 'Ish boʻyicha suhbat'}
               </p>
             </div>
           </div>

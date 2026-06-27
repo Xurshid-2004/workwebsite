@@ -50,7 +50,7 @@ export function useJobSearch(initialCategorySlug?: string) {
   );
 
   const facetsQuery = useAsyncQuery(() => jobsService.getSearchFacets(), [jobsQuery.data.length], {
-    locations: [{ value: 'all', label: 'All locations' }],
+    locations: [{ value: 'all', label: 'Barcha joylashuvlar' }],
   });
 
   const mapMarkers = useMemo(
